@@ -99,8 +99,6 @@ collector_2 = 0
 with open(file_path) as file:
     for line in file:
         play = ''.join(line.split())
-        # opponent = line.split()[0]
-        # outcome = line.split()[1]
         collector_1 += lookup[play]
         collector_2 += lookup_2[play]
 
