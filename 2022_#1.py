@@ -56,8 +56,7 @@ with open(file_path) as file:
             elfs.append(collector)
             collector = 0
         else:
-            value = int(''.join(filter(str.isdigit, line)))
-            collector += value
+            collector += int(''.join(filter(str.isdigit, line)))
     elfs.append(collector)
 
 print(f"max calories: {max(elfs)}")
