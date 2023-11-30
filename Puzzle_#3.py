@@ -1,7 +1,7 @@
 import string
 
 # file_path = "Puzzle_#3_test.txt"
-file_path = "Puzzle_#3.txt"
+file_path = "Data/Puzzle_#3.txt"
 
 letters = string.ascii_letters
 

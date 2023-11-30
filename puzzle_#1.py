@@ -43,7 +43,7 @@ To begin, get your puzzle input.
 """
 
 # file_path = "puzzle_1_test.txt"
-file_path = "input_puzzle_1.txt"
+file_path = "Data/input_puzzle_1.txt"
 
 with open(file_path) as file:
     raw = file.read()
