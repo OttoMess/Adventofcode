@@ -99,6 +99,7 @@ def part2_v1(file_path):
             collector_sum += int(number)
     print(collector_sum)
 
+
 part1(example)
 part1(data)
 
