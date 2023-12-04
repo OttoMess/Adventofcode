@@ -12,6 +12,7 @@ class Puzzle3:
         self.data_list = list()
         self.sum = int()
         self.collector = 0
+        self.collector_2 = 0
         self.file_path = file_path
         numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
         self.numbers = [str(n) for n in numbers]
@@ -21,10 +22,10 @@ class Puzzle3:
         # calling the functions
         self.read_txt()
         self.part1()
-
         print(f"Output part1: {self.collector}")
 
         self.part2()
+        print(f"Output part2: {self.collector_2}")
 
     def read_txt(self):
         with open(self.file_path) as file:
@@ -119,33 +120,75 @@ class Puzzle3:
         for g in gear:
             loc.append(data.find(g))
             data = data.replace(g, ".", 1)
-        return loc
+        r = list()
+        for i in loc:
+            loc_extend = list()
+            if i == 0:
+                loc_extend.append(i)
+                loc_extend.append(i+1)
+            elif i == len(data)-1:
+                loc_extend.append(i-1)
+                loc_extend.append(i)
+            else:
+                loc_extend.append(i-1)
+                loc_extend.append(i)
+                loc_extend.append(i+1)
+            r.append(loc_extend)
+        return r
 
     def part2(self):
         for i in range(self.data_len):
-
+            data = self.data_list[i]
             print(self.data_list[i])
             gears = self.find_gears(self.data_list[i])
+            if len(gears) == 0:
+                continue
 
             if i == 0:
                 n, l = self.find_number_info(self.data_list[i])
                 nn, ll = self.find_number_info(self.data_list[i+1])
-                N = n + nn
-                numbers = [j for i in N for j in i]  # todo does not work if not a list
-                N_L = l + ll
-                number_locations = [j for i in N_L for j in i]
+                num = n + nn
+                loc = l + ll
+                del l, ll, n, nn
             elif i == self.data_len - 1:
-                symbol_locations = self.find_symbol_info(
-                    [self.data_list[i - 1],
-                     self.data_list[i]])
+                n, l = self.find_number_info(self.data_list[i])
+                nn, ll = self.find_number_info(self.data_list[i - 1])
+                num = n + nn
+                loc = l + ll
+                del l, ll, n, nn
             else:
-                symbol_locations = self.find_symbol_info(
-                    [self.data_list[i - 1],
-                     self.data_list[i],
-                     self.data_list[i + 1]])
+                n, l = self.find_number_info(self.data_list[i])
+                nn, ll = self.find_number_info(self.data_list[i - 1])
+                nnn, lll = self.find_number_info(self.data_list[i + 1])
+                num = n + nn + nnn
+                loc = l + ll + lll
+                del l, ll, lll, n, nn, nnn
+
+            temp = list()
+            for j, n in enumerate(num):
+                t = [n for c in loc[j] if c in gears]
+                if len(t) != 0:
+                    temp.append(n)
 
 
-Puzzle3(TEST)
+            for g in gears:
+                q = list()
+                for j, l in enumerate(loc):
+                    for c in l:
+                        if c in g:
+                            q.append(num[j])
+                    # t = [n for c in g if c in n]
+                # if len(t) != 0:
+                #     temp.append(t[1])
+
+            if len(temp) >= 2:
+                g = 1
+                for w in temp:
+                    g *= int(w)
+                self.collector_2 += g
+
+
+# Puzzle3(TEST)
 # Puzzle3(EXAMPLE)
-# Puzzle3(TEST2)
+Puzzle3(TEST2)
 # Puzzle3(DATA)
