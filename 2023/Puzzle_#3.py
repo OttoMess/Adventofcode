@@ -30,7 +30,8 @@ class Puzzle3:
     def read_txt(self):
         with open(self.file_path) as file:
             for line in file:
-                self.data_list.append(line.replace("\n", ""))
+                # self.data_list.append(line.replace("\n", ""))
+                self.data_list.append(line.strip())
         self.data_len = len(self.data_list)
 
     def compare(self, list1, list2):
@@ -164,31 +165,16 @@ class Puzzle3:
                 loc = l + ll + lll
                 del l, ll, lll, n, nn, nnn
 
-            temp = list()
-            for j, n in enumerate(num):
-                t = [n for c in loc[j] if c in gears]
-                if len(t) != 0:
-                    temp.append(n)
-
-
             for g in gears:
-                q = list()
+                temp = list()
                 for j, l in enumerate(loc):
-                    for c in l:
-                        if c in g:
-                            q.append(num[j])
-                    # t = [n for c in g if c in n]
-                # if len(t) != 0:
-                #     temp.append(t[1])
-
-            if len(temp) >= 2:
-                g = 1
-                for w in temp:
-                    g *= int(w)
-                self.collector_2 += g
+                    if self.compare(l,g):
+                        temp.append(num[j])
+                if len(temp) == 2:
+                    self.collector_2 += int(temp[0]) * int(temp[1])
 
 
 # Puzzle3(TEST)
 # Puzzle3(EXAMPLE)
-Puzzle3(TEST2)
-# Puzzle3(DATA)
+# Puzzle3(TEST2)
+Puzzle3(DATA)
