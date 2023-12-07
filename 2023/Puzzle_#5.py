@@ -1,3 +1,5 @@
+import time
+
 EXAMPLE = "Data/Puzzle_#5_example.txt"
 DATA = "Data/Puzzle_#5.txt"
 TEST = "Data/Puzzle_#5_test.txt"
@@ -24,8 +26,9 @@ class Puzzle5:
         self.extract_data()
         self.searcher()
 
-        self.part2()
-        # print("test")
+        # self.part2()
+        # print("test"
+        self.revers()
 
     def part2(self):
         seeds = self.range_build_seeds()
@@ -132,13 +135,26 @@ class Puzzle5:
         output = int()
         found = False
         for j, _ in enumerate(data["source"]):
-            ran = [data["source"][j], data["source"][j] + data["lenght"][j]-1]
+            ran = [data["destination"][j], data["destination"][j] + data["lenght"][j]-1]
             ran.sort()
             if ran[0] <= to_find <= ran[1]:
-                output = to_find + data["offset"][j]
+                output = to_find - data["offset"][j]
                 found = True
         if not found:
             output = to_find
+        return output
+    @staticmethod
+    def finder_seeds(to_find, data):
+        output = int()
+        found = False
+        for j, _ in enumerate(data["source"]):
+            ran = [data["destination"][j], data["destination"][j] + data["lenght"][j]-1]
+            ran.sort()
+            if ran[0] <= to_find <= ran[1]:
+                output = to_find - data["offset"][j]
+                found = True
+        if not found:
+            output = None
         return output
 
     def searcher(self):
@@ -160,6 +176,34 @@ class Puzzle5:
         humidity = self.finder_single(temperature, self.temperature_to_humidity)
         location = self.finder_single(humidity, self.humidity_to_location)
         return location
+
+    def revers(self):
+        run = True
+        i = int(10e6)
+
+        seeds = self.range_build_seeds()
+        start_time = time.time()
+        while run:
+
+            humidity = self.finder_single(i, self.humidity_to_location)
+            temperature = self.finder_single(humidity, self.temperature_to_humidity)
+            light = self.finder_single(temperature, self.light_to_temperature)
+            water = self.finder_single(light, self.water_to_light)
+            fertilizer = self.finder_single(water, self.fertilizer_to_water)
+            soils = self.finder_single(fertilizer, self.soil_to_fertilizer)
+            seed = self.finder_single(soils, self.seeds_to_soil)
+            for j, _ in enumerate(seeds["begin"]):
+                ran = [seeds["begin"][j], seeds["end"][j]]
+                ran.sort()
+                if ran[0] <= seed <= ran[1]:
+                    run = False
+                    print(f"location: {i}  for seed: {seed}")
+            if i > 100e6:
+                run = False
+            if i % 100000 == 0:
+                print(i)
+            i += 1
+        print(f"time passed for reverse search {round(time.time() - start_time, 2)} [sec]")
 
 
 # Puzzle5(EXAMPLE)
