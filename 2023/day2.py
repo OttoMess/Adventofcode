@@ -1,7 +1,7 @@
 
-example = "Data/Puzzle_#2_example.txt"
-data = "Data/Puzzle_#2.txt"
-# test = "Data/Puzzle_#2_test.txt"
+EXAMPLE = "data/day2_example.txt"
+DATA = "data/day2.txt"
+# test = "data/day2_test.txt"
 
 
 def part1(file_path):
@@ -36,8 +36,8 @@ def check_plays(s):
     return 1
 
 
-part1(example)
-part1(data)
+part1(EXAMPLE)
+part1(DATA)
 
 
 def part2(file_path):
@@ -45,7 +45,6 @@ def part2(file_path):
     with open(file_path) as file:
         for j, line in enumerate(file):
             game = line.replace("\n", "").split(":")
-            game_id = game[0].replace("Game ", "")
             shows = [s.split(",") for s in game[1].split(";")]
 
             b, r, g = amount_of_cubes(shows)
@@ -69,5 +68,5 @@ def amount_of_cubes(s):
     return b, r, g
 
 
-part2(example)
-part2(data)
+part2(EXAMPLE)
+part2(DATA)

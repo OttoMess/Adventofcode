@@ -10,7 +10,7 @@ The Elves take turns writing down the number of Calories contained by the variou
 that they've brought with them, one item per line. Each Elf separates their own inventory from the previous
 Elf's inventory (if any) by a blank line.
 
-For example, suppose the Elves finish writing their items' Calories and end up with the following list:
+For EXAMPLE, suppose the Elves finish writing their items' Calories and end up with the following list:
 
 1000
 2000
@@ -35,7 +35,7 @@ The fourth Elf is carrying food with 7000, 8000, and 9000 Calories, a total of 2
 The fifth Elf is carrying one food item with 10000 Calories.
 In case the Elves get hungry and need extra snacks, they need to know which Elf to ask:
  they'd like to know how many Calories are being carried by the Elf carrying the most Calories.
- In the example above, this is 24000 (carried by the fourth Elf).
+ In the EXAMPLE above, this is 24000 (carried by the fourth Elf).
 
 Find the Elf carrying the most Calories. How many total Calories is that Elf carrying?
 
@@ -43,7 +43,7 @@ To begin, get your puzzle input.
 """
 
 # file_path = "puzzle_1_test.txt"
-file_path = "Data/input_puzzle_1.txt"
+file_path = "data/input_puzzle_1.txt"
 
 with open(file_path) as file:
     raw = file.read()

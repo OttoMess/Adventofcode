@@ -1,8 +1,5 @@
-
-EXAMPLE = "Data/Puzzle_#4_example.txt"
-DATA = "Data/Puzzle_#4.txt"
-TEST = "Data/Puzzle_#4_test.txt"
-TEST2 = "Data/Puzzle_#4_test2.txt"
+EXAMPLE = "data/day4_example.txt"
+DATA = "data/day4.txt"
 
 
 class Puzzle4:

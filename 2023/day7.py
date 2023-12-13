@@ -1,10 +1,9 @@
 import time
 from dataclasses import dataclass
 
-EXAMPLE = "Data/Puzzle_#7_example.txt"
-DATA = "Data/Puzzle_#7.txt"
-TEST = "Data/Puzzle_#7_test.txt"
-TEST2 = "Data/Puzzle_#7_test2.txt"
+EXAMPLE = "data/day7_example.txt"
+DATA = "data/day7.txt"
+TEST = "data/day7_test.txt"
 
 """
 A score will be build based on the type of hand and the card within the hand.
@@ -12,7 +11,7 @@ the score is a single number which than can be used to easily sort the hands pla
 
 score = xaabbccddee
 x= is 1 to 7 depending on the type 
-aa,bb,cc,dd,ee = 1 to 13 based on the card type (aa first card ee last)
+aa,bb,cc,dd,ee = 1 to 13 based on the card type ('aa' first card 'ee' last)
 
 """
 

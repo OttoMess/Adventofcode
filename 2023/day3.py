@@ -1,7 +1,7 @@
-EXAMPLE = "Data/Puzzle_#3_example.txt"
-DATA = "Data/Puzzle_#3.txt"
-TEST = "Data/Puzzle_#3_test.txt"
-TEST2 = "Data/Puzzle_#3_test2.txt"
+EXAMPLE = "data/day3_example.txt"
+DATA = "data/day3.txt"
+TEST = "data/day3_test.txt"
+TEST2 = "data/day3_test2.txt"
 
 
 class Puzzle3:
@@ -34,7 +34,8 @@ class Puzzle3:
                 self.data_list.append(line.strip())
         self.data_len = len(self.data_list)
 
-    def compare(self, list1, list2):
+    @staticmethod
+    def compare(list1, list2):
         for val in list1:
             if val in list2:
                 return True
@@ -63,8 +64,9 @@ class Puzzle3:
             loc_num.append(temp)
         return numbers, loc_num
 
-    def find_ch_in_str(self,s,ch):
-            return [i for i, ltr in enumerate(s) if ltr == ch]
+    @staticmethod
+    def find_ch_in_str(s,ch):
+        return [i for i, ltr in enumerate(s) if ltr == ch]
 
     def find_symbol_info(self, data: list):
         loc_sym = list()
@@ -115,7 +117,8 @@ class Puzzle3:
                 else:
                     continue
 
-    def find_gears(self, data):
+    @staticmethod
+    def find_gears(data):
         gear = [c for c in data if c == "*"]
         loc = list()
         for g in gear:
@@ -139,42 +142,41 @@ class Puzzle3:
 
     def part2(self):
         for i in range(self.data_len):
-            data = self.data_list[i]
             print(self.data_list[i])
             gears = self.find_gears(self.data_list[i])
             if len(gears) == 0:
                 continue
 
             if i == 0:
-                n, l = self.find_number_info(self.data_list[i])
-                nn, ll = self.find_number_info(self.data_list[i+1])
+                n, L = self.find_number_info(self.data_list[i])
+                nn, LL = self.find_number_info(self.data_list[i+1])
                 num = n + nn
-                loc = l + ll
-                del l, ll, n, nn
+                loc = L + LL
+                del L, LL, n, nn
             elif i == self.data_len - 1:
-                n, l = self.find_number_info(self.data_list[i])
-                nn, ll = self.find_number_info(self.data_list[i - 1])
+                n, L = self.find_number_info(self.data_list[i])
+                nn, LL = self.find_number_info(self.data_list[i - 1])
                 num = n + nn
-                loc = l + ll
-                del l, ll, n, nn
+                loc = L + LL
+                del L, LL, n, nn
             else:
-                n, l = self.find_number_info(self.data_list[i])
-                nn, ll = self.find_number_info(self.data_list[i - 1])
-                nnn, lll = self.find_number_info(self.data_list[i + 1])
+                n, L = self.find_number_info(self.data_list[i])
+                nn, LL = self.find_number_info(self.data_list[i - 1])
+                nnn, LLL = self.find_number_info(self.data_list[i + 1])
                 num = n + nn + nnn
-                loc = l + ll + lll
-                del l, ll, lll, n, nn, nnn
+                loc = L + LL + LLL
+                del L, LL, LLL, n, nn, nnn
 
             for g in gears:
                 temp = list()
-                for j, l in enumerate(loc):
-                    if self.compare(l,g):
+                for j, L in enumerate(loc):
+                    if self.compare(L,g):
                         temp.append(num[j])
                 if len(temp) == 2:
                     self.collector_2 += int(temp[0]) * int(temp[1])
 
 
-# Puzzle3(TEST)
-# Puzzle3(EXAMPLE)
-# Puzzle3(TEST2)
+Puzzle3(TEST)
+Puzzle3(EXAMPLE)
+Puzzle3(TEST2)
 Puzzle3(DATA)

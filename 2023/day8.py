@@ -1,10 +1,10 @@
 import time
 import math
 
-EXAMPLE = "Data/Puzzle_#8_example.txt"
-DATA = "Data/Puzzle_#8.txt"
-TEST = "Data/Puzzle_#8_test.txt"
-TEST2 = "Data/Puzzle_#8_test2.txt"
+EXAMPLE = "data/day8_example.txt"
+DATA = "data/day8.txt"
+TEST = "data/day8_test.txt"
+TEST2 = "data/day8_test2.txt"
 
 
 class Puzzle8:

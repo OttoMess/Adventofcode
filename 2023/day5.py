@@ -1,9 +1,7 @@
 import time
 
-EXAMPLE = "Data/Puzzle_#5_example.txt"
-DATA = "Data/Puzzle_#5.txt"
-TEST = "Data/Puzzle_#5_test.txt"
-TEST2 = "Data/Puzzle_#5_test2.txt"
+EXAMPLE = "data/day5_example.txt"
+DATA = "data/day5.txt"
 
 
 class Puzzle5:
@@ -25,9 +23,6 @@ class Puzzle5:
         self.read_txt()
         self.extract_data()
         self.searcher()
-
-        # self.part2()
-        # print("test"
         self.revers()
 
     def part2(self):
@@ -143,6 +138,7 @@ class Puzzle5:
         if not found:
             output = to_find
         return output
+
     @staticmethod
     def finder_seeds(to_find, data):
         output = int()
@@ -206,5 +202,5 @@ class Puzzle5:
         print(f"time passed for reverse search {round(time.time() - start_time, 2)} [sec]")
 
 
-# Puzzle5(EXAMPLE)
+Puzzle5(EXAMPLE)
 Puzzle5(DATA)
