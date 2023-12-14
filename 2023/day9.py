@@ -1,7 +1,7 @@
 import time
 
-EXAMPLE = "data/day9.txt"
-DATA = "data/day9_example.txt"
+DATA = "data/day9.txt"
+EXAMPLE = "data/day9_example.txt"
 
 
 class Puzzle9:
