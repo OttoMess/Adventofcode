@@ -34,7 +34,7 @@ class Puzzle10:
         self.part2()
         print(file_path)
         print(f"Path lenght for part 1: {self.part1_collector}")
-        # print(f"Number of steps part 2: {self.part2_collector}")
+        print(f"Number of steps part 2: {self.part2_collector}")
         print(f"Run time {round(time.time() - start_time, 4)} [sec]\n")
 
     def read_txt(self):
@@ -78,32 +78,22 @@ class Puzzle10:
 
     def shoelace(self):
         lace = self.path[0]
-        lace.append(self.path[0][0])
         count = 0
-        for j in range(len(lace)-1):
-            count += lace[j][0] * lace[j+1][1] - lace[j+1][0] * lace[j][1]
-        print(count / 2)
+        for j in range(len(lace)):
+            x1 = lace[j][0]
+            y1 = lace[j][1]
+            if j == len(lace)-1:
+                x2 = lace[0][0]
+                y2 = lace[0][1]
+            else:
+                x2 = lace[j+1][0]
+                y2 = lace[j+1][1]
+            count += abs(x1 * y2) - abs(x2 * y1)
+
         count = int(count / 2)
-
-        for i in self.path[1]:
-            tube = self.remap[i[0]][i[1]]
-            straight = 0
-            outer = 0
-            inner = 0
-            if tube == "║" or tube == "═":
-                straight += 1
-            elif tube == "╚" or tube == "╝":
-                outer += 1
-
-
-
-        print("test")
-    """
-    For a straight pipe, its square contributes 1/2 to the area.
-    For an outer bend, its square contributes 1/4 to the area.
-    For an inner bend, its square contributes 3/4 to the area.
-    """
-
+        inner = abs(count) - (len(lace)/2 - 1)  # the -1 related to the fact there are 4 inward corner each 1/4
+        print(inner)
+        self.part2_collector = int(inner)
 
     def redraw(self):
         mapper = list()
@@ -237,4 +227,4 @@ class Puzzle10:
 
 Puzzle10(EXAMPLE)
 # Puzzle10(TEST)
-# Puzzle10(DATA)
+Puzzle10(DATA)
