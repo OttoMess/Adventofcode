@@ -74,8 +74,36 @@ class Puzzle10:
 
     def part2(self):
         self.redraw()
-        self.outsider([0, 0])
+        self.shoelace()
+
+    def shoelace(self):
+        lace = self.path[0]
+        lace.append(self.path[0][0])
+        count = 0
+        for j in range(len(lace)-1):
+            count += lace[j][0] * lace[j+1][1] - lace[j+1][0] * lace[j][1]
+        print(count / 2)
+        count = int(count / 2)
+
+        for i in self.path[1]:
+            tube = self.remap[i[0]][i[1]]
+            straight = 0
+            outer = 0
+            inner = 0
+            if tube == "║" or tube == "═":
+                straight += 1
+            elif tube == "╚" or tube == "╝":
+                outer += 1
+
+
+
         print("test")
+    """
+    For a straight pipe, its square contributes 1/2 to the area.
+    For an outer bend, its square contributes 1/4 to the area.
+    For an inner bend, its square contributes 3/4 to the area.
+    """
+
 
     def redraw(self):
         mapper = list()
@@ -87,7 +115,6 @@ class Puzzle10:
             string = "".join(_ for _ in i)
             print(string)
         self.remap = mapper
-        print("test")
 
     def outsider(self, current):
 
@@ -209,5 +236,5 @@ class Puzzle10:
 
 
 Puzzle10(EXAMPLE)
-Puzzle10(TEST)
-Puzzle10(DATA)
+# Puzzle10(TEST)
+# Puzzle10(DATA)
