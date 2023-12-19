@@ -22,8 +22,8 @@ class Puzzle12:
 
         start_time = time.time()
 
-        # self.part1()
-        self.part2()
+        self.part1()
+        # self.part2()
         print(self.file_path)
         print(f"Sum for part 1: {self.part1_collector}")
         # print(f"Sum for part 2: {self.part2_collector}")
@@ -45,20 +45,19 @@ class Puzzle12:
 
         group = [int(g) for g in group]
         sets = sum(group) - vent.count("#")
-        w = [s for s in itertools.combinations(q, sets)]
-        e = [list(i) for i in w]
-
-        print(len(e))
-
+        # w = [s for s in itertools.combinations(q, sets)]
+        # e = [list(i) for i in w]
         ans = 0
-        for j, c in enumerate(e):
+        # print(f"start loop with lenth of set : {sets}")
+        for s in itertools.combinations(q, sets):
             test = list(vent.replace("?", "."))
-            for i in c:
-                test[i] = "#"
+            for c in s:
+                test[c] = "#"
             valid = self.is_valid("".join(i for i in test), group)
             if valid:
                 # print("".join(i for i in test))
                 ans += 1
+
         print(vent, group, ans)
         return ans
 
@@ -93,11 +92,9 @@ class Puzzle12:
         vents = [(i.split(" ")[0] + "?") * 4 + i.split(" ")[0] for i in self.data]
         groups = [(i.split(" ")[1]+",") * 4 + i.split(" ")[1]for i in self.data]
 
-        r = [i.split(",") for i in groups]
-
         self.springs = vents
-        self.fold_groups = r
+        self.fold_groups = [i.split(",") for i in groups]
 
 
 Puzzle12(EXAMPLE)
-# Puzzle12(DATA)
+Puzzle12(DATA)
