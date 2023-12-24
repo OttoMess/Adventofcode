@@ -46,7 +46,7 @@ class Puzzle14:
         # #         w = l
         self.part2_collector = pattern[5]  # looked at plot to find the correct index
 
-    def cycle(self,data):
+    def cycle(self, data):
         north = self.north(data)
         west = self.west(north)
         south = self.south(west)
@@ -143,7 +143,7 @@ def finder_north(j, loc, field):  # recursive function
     elif field[j][loc] != ".":
         return j+1
     else:
-        return finder_north(j-1,loc,field)
+        return finder_north(j-1, loc, field)
 
 
 def finder_south(j, loc, field):  # recursive function
@@ -152,7 +152,7 @@ def finder_south(j, loc, field):  # recursive function
     elif field[j][loc] != ".":
         return j-1
     else:
-        return finder_south(j+1,loc,field)
+        return finder_south(j+1, loc, field)
 
 
 def finder_east(loc, line):
