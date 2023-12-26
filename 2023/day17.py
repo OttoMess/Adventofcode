@@ -1,17 +1,11 @@
 import time
 from dataclasses import dataclass
 import math
-import operator
+# import operator
 
 DATA = "data/day17.txt"
 EXAMPLE = "data/day17_example.txt"
 TEST = "data/day17_test.txt"
-
-
-# @dataclass
-# class Point:
-#     cor: list = None
-#     heat_loss: int = None
 
 
 @dataclass
@@ -33,7 +27,7 @@ class Puzzle17:
         self.file_path = path
         self.data = list()
 
-        self.part1_collector = 0
+        self.part1_collector = int
         self.part2_collector = 0
 
         start_time = time.time()
@@ -85,36 +79,32 @@ class Puzzle17:
                 all_points.append(Node(cor=[j, k], heat_loss=int(data[j][k])))
         return all_points
 
-    def dijkstra(self, node_list):
-        # node_list = [_ for _ in graph]
-        # heat_loss = [math.inf for _ in graph]
-        # previous = [None for _ in graph]
+    def dijkstra(self, node_list, target: list):
         visited = list()
         queue = [_ for _ in node_list]
 
         node_list[0].heat_lost = 0
         node_list[0].previous = "start"
-        # heat_loss[0] = 0
-        # previous[0] = "start"
-        first = True
+
         while queue:
+            queue.sort(key=self.get_heat_loss)
+            current = queue[0]
+            queue.remove(current)
 
-            if first:
-                new_node = queue[0]
-                first = False
-            else:
-                # new_node, loc_queue = self.next_node(node_list, queue, visited)
-                new_node = self.next_node(node_list, queue, visited)
-
-            if not new_node:
-                current = queue[0]
-            else:
-                current = new_node
+            if current.cor == target:
+                for node in node_list:
+                    if node.previous is None:
+                        node_list.remove(node)
+                return node_list
 
             loc = node_list.index(current)
-            queue.remove(current)
             visited.append(current)
+
             neighbors = neighbor_search(current, node_list)
+            for n in neighbors:  # check if the neighbors are not 3 in a row
+                valid = self.validate_neighbors(current, n, node_list)
+                if not valid:
+                    neighbors.remove(n)
 
             for n in neighbors:
                 tentative_heat_loss = node_list[loc].heat_lost + n.heat_loss
@@ -123,56 +113,50 @@ class Puzzle17:
                 if tentative_heat_loss < node_list[loc_n].heat_lost:
                     node_list[loc_n].heat_lost = tentative_heat_loss
                     node_list[loc_n].previous = loc
+                    if n in queue:
+                        pos = queue.index(n)
+                        queue[pos].heat_loss = tentative_heat_loss
+                        queue[pos].previous = loc
 
         return node_list
 
-    def next_node(self, node_list, queue, visited):
-        nodes_heat_sort = sorted(node_list, key=self.get_heat_loss)
-        queue_cor = [i.cor for i in queue]
-
-        for j, node in enumerate(nodes_heat_sort):
-            if node.heat_lost == math.inf:
-                # node = False
-                # location = False
-                # return node, location
-                current = visited[-1]
-                break
-            if node.cor in queue_cor:
-                return node
-
-        neighbors = neighbor_search(current, queue)
-        # for neighbor in neighbors:
-        #     valid = self.validate_neighbors(current, neighbor, previous)
-        #     if not valid:
-        #         neighbors.remove(neighbor)
-
-        heat_loss = [i.heat_lost for i in neighbors]
-        if len(neighbors) == 0:
-            node = False
-            location = False
-        else:
-            node = neighbors[heat_loss.index(min(heat_loss))]
-            # location = node_list.index(node)
-        # return node, location
-        return node
-    def validate_neighbors(self, current, neighbor, previous):
-        # todo check if last 3 steps where not in line
-        step = self.all_points.index(current)
+    @staticmethod
+    def validate_neighbors(current, neighbor, node_list):
+        step = node_list.index(current)
         path = list()
         k = 0
-        while step != "start" and k < 3:
+        while step != "start" and k < 4:
             path.append(step)
-            step = previous[step]
+            step = node_list[step].previous
             k += 1
 
-        if len(path) < 3:
+        if len(path) < 4:
             return True
-        row = neighbor.cor[0]
-        col = neighbor.cor[1]
+
+        # todo does not work need to be fixed better way to find if 3 in a row
+        n_row = neighbor.cor[0]
+        n_col = neighbor.cor[1]
+
+        p0_row = node_list[path[0]].cor[0]
+        p1_row = node_list[path[1]].cor[0]
+        p2_row = node_list[path[2]].cor[0]
+        p3_row = node_list[path[3]].cor[0]
+
+        p0_col = node_list[path[0]].cor[1]
+        p1_col = node_list[path[1]].cor[1]
+        p2_col = node_list[path[2]].cor[1]
+        p3_col = node_list[path[3]].cor[1]
+
+        if p0_row == p1_row == p2_row == p3_row == n_row:
+            return False
+        elif p0_col == p1_col == p2_col == p3_col == n_col:
+            return False
+        else:
+            return True
 
     def part1(self):
         self.all_points = self.build_graph(self.data)
-        node_list = self.dijkstra(self.all_points)
+        node_list = self.dijkstra(self.all_points, self.all_points[-1].cor)
         self.part1_collector = node_list[-1].heat_lost
         self.draw_path(node_list)
         pass
@@ -184,7 +168,6 @@ class Puzzle17:
 def neighbor_search(current, graph):
     row = current.cor[0]
     col = current.cor[1]
-
     output = list()
 
     for i in graph:
@@ -203,5 +186,5 @@ def neighbor_search(current, graph):
     return output
 
 
-Puzzle17(TEST)
+# Puzzle17(TEST)
 Puzzle17(EXAMPLE)
