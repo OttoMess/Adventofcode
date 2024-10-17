@@ -1,6 +1,6 @@
 
-EXAMPLE = "data/day2_example.txt"
-DATA = "data/day2.txt"
+EXAMPLE = "2023/data/day2_example.txt"
+DATA = "2023/data/day2.txt"
 # test = "data/day2_test.txt"
 
 
