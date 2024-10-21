@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <sstream>
 #include <chrono>
+#include <vector>
 
 using namespace std;
 
 int part1(string str)
 {
-	// cout << str << endl;
 	stringstream ss;
 	
 	ss << str;
@@ -22,7 +22,6 @@ int part1(string str)
   			
 			if (i == 0){ // getting the first int. this is the game number
 				game_id = number;
-				// cout << "game number: "<< game_id << endl;
 			}
 			else{ // if not the first int, it is a count of cubes
 				cubes = number;
@@ -31,26 +30,23 @@ int part1(string str)
 		} 
 		// finding the color of the cubes (int) found above
 		else{
-			if (cubes <=12){
+			if (cubes <=12){  // quickly continue if no dice count is above 12
 				continue;
 			}
 
 			else if (temp.find("blue") != string::npos){
-				// cout << cubes <<" blue cubes" << endl;
 				if (cubes > 14){
 					return 0;
 				}
 			} 
 
 			else if (temp.find("red") != string::npos){
-				// cout << cubes <<" red cubes" << endl;
 				if (cubes > 12){
 					return 0;
 				}
 			}
 
 			else if (temp.find("green") != string::npos){
-				// cout << cubes <<" green cubes" << endl;
 				if (cubes > 13){
 					return 0;
 				}
@@ -102,34 +98,28 @@ int part2(string str){
 }
 
 
-// int NumberOfLines(string str){
-// 	//  find the number of lines in the text file
-// 	int lines=0;
-// 	ifstream myfile (str, ios::in);
-// 	string unused;
-// 	while (getline(myfile, unused))
-// 		lines++;
+vector<string> TXTtoVector(string str){
+	// making vector for storing the data
+	vector<string> data;
+	string line;
+	ifstream myfile (str, ios::in);
+
+	while(getline (myfile,line))
+		data.push_back(line);
+	return data;
+}
+
+void RunBothParts(vector<string> data){
+		int game_id=0, output=0, part2_output = 0;
+
+		for (auto i : data){
+			output += part1(i);
+			part2_output += part2(i);
+	}
 	
-// 	return lines;
-// }
-
-
-// array<string,5> TXTtoDataArray(string str, int lines) {
-// 	// building an array with all the lines of the text file
-// 	// string data[lines], line;
-// 	array<string,5> data;
-// 	int i=0;
-
-// 	ifstream file (str, ios::in);
-// 	while (getline (file, line)){
-// 		data[i] = line;
-// 		i++;
-// 	}
-// 	return data;
-// }
-
-
-
+	cout << "part1 output: " << output << "\n";
+	cout << "part2 output: " << part2_output << "\n";
+}
 
 
 int main() {
@@ -137,34 +127,21 @@ int main() {
 	cout << "    ### Running program ###\n";
   	// declaring variables:
 	int game_id=0, output=0, part2_output = 0;
-	string s, line, data;
+	string s, line;
+	vector<string> data_example, data;
 
+	data_example = TXTtoVector("data/day2_example.txt");
+	data = TXTtoVector("data/day2.txt");
 
-	// data = TXTtoDataArray("data/day2_example.txt", NumberOfLines("data/day2_example.txt"));
-	// test = NumberOfLine("data/day2.txt");
+	cout << endl << "example file" << endl;
+	RunBothParts(data_example);
+	cout << endl << "full data" << endl;
+	RunBothParts(data);
 	
-	// string data[lines];
+	cout << "    ### Program ended ###" << endl;
 
-  	// ifstream myfile ("data/day2_example.txt", ios::in);
-	ifstream myfile ("data/day2.txt", ios::in);
- 	
-	if (myfile.is_open())
-  	{
-    	while ( getline (myfile,line) ){
-			output += part1(line);
-			part2_output += part2(line);
-    	}
-
-    	myfile.close();
-		cout << "part1 output: " << output << "\n";
-		cout << "part2 output: " << part2_output << "\n";
-		cout << "    ### Program ended ###" << "\n";
-  	}
-
-
-  	// else cout << "Unable to open file";
 	auto t2 = chrono::high_resolution_clock::now();
 	auto duration = chrono::duration_cast<chrono::microseconds>( t2 - t1 ).count();
-	cout << duration<< " microseconds";
+	cout <<endl <<  duration<< " microseconds";
   	return 0;
 }

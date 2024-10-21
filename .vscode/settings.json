@@ -6,7 +6,10 @@
         "ostream": "cpp",
         "iosfwd": "cpp",
         "string": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "span": "cpp"
     },
     "cSpell.words": [
         "myfile"
