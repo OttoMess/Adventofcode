@@ -1,7 +1,7 @@
-EXAMPLE = "data/day3_example.txt"
-DATA = "data/day3.txt"
-TEST = "data/day3_test.txt"
-TEST2 = "data/day3_test2.txt"
+EXAMPLE = "2023/data/day3_example.txt"
+DATA = "2023/data/day3.txt"
+TEST = "2023/data/day3_test.txt"
+TEST2 = "2023/data/day3_test2.txt"
 
 
 class Puzzle3:

@@ -1,6 +1,6 @@
 from functools import cache
 
-with open("data/day12.txt", "r") as f: inputString = f.read().splitlines()
+with open("2023/data/day12.txt", "r") as f: inputString = f.read().splitlines()
 
 
 @cache

@@ -1,9 +1,9 @@
 import time
 import itertools
 
-DATA = "data/day11.txt"
-EXAMPLE = "data/day11_example.txt"
-TEST = "data/day11_test.txt"
+DATA = "2023/data/day11.txt"
+EXAMPLE = "2023/data/day11_example.txt"
+TEST = "2023/data/day11_test.txt"
 
 
 class Puzzle11:

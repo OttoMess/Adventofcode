@@ -1,5 +1,5 @@
-EXAMPLE = "data/day4_example.txt"
-DATA = "data/day4.txt"
+EXAMPLE = "2023/data/day4_example.txt"
+DATA = "2023/data/day4.txt"
 
 
 class Puzzle4:
@@ -53,6 +53,7 @@ class Puzzle4:
                     else:
                         temp = temp * 2
             self.collector += temp
+            # print(self.card_id[j], temp)
 
     def find_points_part2(self):
         for j, _ in enumerate(self.card_id):
@@ -67,7 +68,7 @@ class Puzzle4:
                 for i in range(1,temp+1):
                     self.card_count[j+i] += 1 * count
 
-        print(self.card_count)
+        # print(self.card_count)
 
 
 Puzzle4(EXAMPLE)

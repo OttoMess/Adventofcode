@@ -1,4 +1,7 @@
-Python code to solve the puzzles from the Advantofcode https://adventofcode.com/
+Code to solve the puzzles from the Advantofcode https://adventofcode.com/
+
+Most coding is done in Python. Working on learning C++. 
+
+Build on Python 3.12. 
 
 
-Build on Python 3.12, so far no additonal pakages are used. 

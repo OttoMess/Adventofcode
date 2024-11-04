@@ -3,9 +3,9 @@ from dataclasses import dataclass
 import math
 import operator
 
-DATA = "data/day17.txt"
-EXAMPLE = "data/day17_example.txt"
-TEST = "data/day17_test.txt"
+DATA = "2023/data/day17.txt"
+EXAMPLE = "2023/data/day17_example.txt"
+TEST = "2023/data/day17_test.txt"
 
 
 # @dataclass

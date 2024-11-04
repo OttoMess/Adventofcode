@@ -1,9 +1,9 @@
 import time
 from dataclasses import dataclass
 
-EXAMPLE = "data/day7_example.txt"
-DATA = "data/day7.txt"
-TEST = "data/day7_test.txt"
+EXAMPLE = "2023/data/day7_example.txt"
+DATA = "2023/data/day7.txt"
+TEST = "2023/data/day7_test.txt"
 
 """
 A score will be build based on the type of hand and the card within the hand.

@@ -1,7 +1,7 @@
 import string
 
 # file_path = "day#3_test.txt"
-file_path = "data/day#3.txt"
+file_path = "2023/data/day#3.txt"
 
 letters = string.ascii_letters
 

@@ -2,8 +2,8 @@ import time
 from dataclasses import dataclass
 import threading
 
-DATA = "data/day16.txt"
-EXAMPLE = "data/day16_example.txt"
+DATA = "2023/data/day16.txt"
+EXAMPLE = "2023/data/day16_example.txt"
 
 
 @dataclass

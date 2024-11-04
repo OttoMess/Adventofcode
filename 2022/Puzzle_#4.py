@@ -2,9 +2,9 @@
 https://adventofcode.com/2022/day/4
 """
 
-example = "data/day#4_example.txt"
-data = "data/day4.txt"
-test = "data/day4_test.txt"
+example = "2023/data/day#4_example.txt"
+data = "2023/data/day4.txt"
+test = "2023/data/day4_test.txt"
 
 
 def part1(file_path):

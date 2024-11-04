@@ -4,6 +4,9 @@
 #include <sstream>
 #include <chrono>
 #include <vector>
+#include <filesystem>
+
+#include "c_lib.h"
 
 using namespace std;
 
@@ -53,7 +56,7 @@ int part1(string str)
 			}
 		}
 	}
-	// cout << endl;
+	// cout << "\n";
 	return game_id;
 }
 
@@ -97,18 +100,6 @@ int part2(string str){
 	return total;
 }
 
-
-vector<string> TXTtoVector(string str){
-	// making vector for storing the data
-	vector<string> data;
-	string line;
-	ifstream myfile (str, ios::in);
-
-	while(getline (myfile,line))
-		data.push_back(line);
-	return data;
-}
-
 void RunBothParts(vector<string> data){
 		int game_id=0, output=0, part2_output = 0;
 
@@ -126,6 +117,8 @@ int main() {
 	auto t1 = chrono::high_resolution_clock::now();
 	cout << "    ### Running program ###\n";
   	// declaring variables:
+    filesystem::current_path("C:\\C-storage\\GitHub\\Adventofcode\\2023");
+		
 	int game_id=0, output=0, part2_output = 0;
 	string s, line;
 	vector<string> data_example, data;
@@ -133,15 +126,15 @@ int main() {
 	data_example = TXTtoVector("data/day2_example.txt");
 	data = TXTtoVector("data/day2.txt");
 
-	cout << endl << "example file" << endl;
+	cout << "\n" << "example file" << "\n";
 	RunBothParts(data_example);
-	cout << endl << "full data" << endl;
+	cout << "\n" << "full data" << "\n";
 	RunBothParts(data);
 	
-	cout << "    ### Program ended ###" << endl;
+	cout << "    ### Program ended ###" << "\n";
 
 	auto t2 = chrono::high_resolution_clock::now();
 	auto duration = chrono::duration_cast<chrono::microseconds>( t2 - t1 ).count();
-	cout <<endl <<  duration<< " microseconds";
+	cout <<"\n" <<  duration<< " microseconds";
   	return 0;
 }

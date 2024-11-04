@@ -1,7 +1,7 @@
 
-example = "data/day1_example.txt"
-data = "data/day1.txt"
-test = "data/day1_test.txt"
+example = "2023/data/day1_example.txt"
+data = "2023/data/day1.txt"
+test = "2023/data/day1_test.txt"
 
 
 def part1(file_path):

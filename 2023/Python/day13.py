@@ -3,9 +3,9 @@ import time
 # from functools import cache
 # import itertools
 
-DATA = "data/day13.txt"
-EXAMPLE = "data/day13_example.txt"
-TEST = "data/day13_test.txt"
+DATA = "2023/data/day13.txt"
+EXAMPLE = "2023/data/day13_example.txt"
+TEST = "2023/data/day13_test.txt"
 
 
 class Puzzle13:

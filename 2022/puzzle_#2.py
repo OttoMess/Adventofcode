@@ -92,7 +92,7 @@ lookup_2 = {"AX": 3+0,
             "CZ": 1+6}
 
 # file_path = "Puzzle_2_input_test.txt"
-file_path = "data/Puzzle_2_input.txt"
+file_path = "2023/data/Puzzle_2_input.txt"
 
 collector_1 = 0
 collector_2 = 0
