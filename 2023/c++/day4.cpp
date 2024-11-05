@@ -1,69 +1,56 @@
-#include <vector>
-#include <fstream>
 #include <iostream>
 #include <filesystem>
-#include <sstream>
-#include <bits/stdc++.h>
 #include <ranges>
-
-
+#include <fstream>
+#include <vector>
+#include <sstream>
+#include <algorithm>
 #include "c_lib.h"
 
 using namespace std;
 
-class PartOne: public BaseAdventofcode {
-    public:
-
-    string path_name = "unset";
+class PartOne : public BaseAdventofcode
+{
+public:
     int score = 0;
-    vector<string> data;
 
-    void Run(){
-        this->data = TXTtoVector(this->path_name);
-        for(const string& i : this->data)
-            this->FindPoints(i);
-        cout << "for " << this->path_name << " output is: " << this->score << endl;
-    }
-
-
-    vector<int> FindIntString(string str){
-        stringstream ss;
-        vector<int> numbers;
-        ss << str;
-        string temp;
-        int number;
-        
-        while (!ss.eof()){
-            ss >> temp;
-
-            if (stringstream(temp) >> number) {
-                numbers.push_back(number);
-            } 
+    PartOne(string path_name, bool set_path)
+    { // constructor runs when the class is made
+        if (set_path == true)
+        {
+            this->SetPath();
         }
-        sort(numbers.begin(), numbers.end());
-        return numbers;
+        const vector<string> data = TXTtoVector(path_name);
+        for (const string &i : data)
+            this->FindPoints(i);
+        cout << "For " << path_name << " output is: " << this->score << endl;
     }
 
-    void FindPoints(string str){
-        int start_base, start_check, score=0; 
+    void FindPoints(string str)
+    {
+        int start_base, start_check, score = 0;
         string play_string, check_string;
         vector<int> play_numbers, check_numbers;
 
-        start_base =  str.find(":") + 2;
-        start_check =  str.find("|");
-        
-        play_string = str.substr(start_base,start_check-start_base-1);
-        check_string = str.substr(start_check+2);
-        
+        start_base = str.find(":");
+        start_check = str.find("|");
+
+        play_string = str.substr(start_base + 2, start_check - start_base - 1);
+        check_string = str.substr(start_check + 2);
+
         play_numbers = this->FindIntString(play_string);
         check_numbers = this->FindIntString(check_string);
-        
-        for(const int& i : play_numbers)
-            if(count(check_numbers.begin(), check_numbers.end(), i) > 0){
-                if (score == 0){
+
+        for (const int &i : play_numbers)
+            if (binary_search(check_numbers.begin(), check_numbers.end(), i) == true)
+            {
+                // if(count(check_numbers.begin(), check_numbers.end(), i) > 0){
+                if (score == 0)
+                {
                     score++;
                 }
-                else{
+                else
+                {
                     score *= 2;
                 }
             }
@@ -71,20 +58,11 @@ class PartOne: public BaseAdventofcode {
     }
 };
 
+int main()
+{
 
-
-
-
-int main(){
-    // SetPath();
-    PartOne example, day;
-    day.SetPath();
-
-    example.path_name = "data/day4_example.txt";
-    example.Run();
-
-    day.path_name = "data/day4.txt";
-    day.Run();
+    PartOne("data/day4_example.txt", true);
+    PartOne("data/day4.txt", false);
 
     return 0;
 }
