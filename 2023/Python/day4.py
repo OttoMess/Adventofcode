@@ -3,7 +3,6 @@ DATA = "2023/data/day4.txt"
 
 
 class Puzzle4:
-
     def __init__(self, file_path):
         # defining the variables used
         self.data_len = int()
@@ -13,15 +12,14 @@ class Puzzle4:
         self.win_num = list()
         self.play_num = list()
         self.collector = 0
-
         self.card_count = list()
+
         # calling the functions
         self.read_txt()
         self.split_data()
         self.find_points_part1()
         self.find_points_part2()
         print(f"Output part1: {self.collector}")
-
         print(f"Output part2: {sum(self.card_count)}")
 
     def read_txt(self):
@@ -65,10 +63,8 @@ class Puzzle4:
             if temp == 0:
                 continue
             else:
-                for i in range(1,temp+1):
-                    self.card_count[j+i] += 1 * count
-
-        # print(self.card_count)
+                for i in range(1, temp + 1):
+                    self.card_count[j + i] += 1 * count
 
 
 Puzzle4(EXAMPLE)
