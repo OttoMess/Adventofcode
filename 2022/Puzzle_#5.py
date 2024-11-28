@@ -63,14 +63,14 @@ class puzzle5:
         for move in self.moves:
             numbers = [int(s) for s in move.split() if s.isnumeric()]
             amount = numbers[0]
-            from_loc = numbers[1] - 1  # compensate for count start at 0
+            from_loc = numbers[1] - 1  # compensate for count start at 0K
             to_loc = numbers[2] - 1  # compensate for count start at 0
 
             for i in range(amount):
                 cache[to_loc].append(cache[from_loc].pop())
         return cache
 
-    def move_crates_in_bulk(self):
+    def move_crates_in_bulk(self):  # part two
         cache = [i[:] for i in self.stacks]
         for move in self.moves:
             numbers = [int(s) for s in move.split() if s.isnumeric()]
@@ -78,7 +78,7 @@ class puzzle5:
             from_loc = numbers[1] - 1  # compensate for count start at 0
             to_loc = numbers[2] - 1  # compensate for count start at 0
 
-            temp_stack = list()
+            temp_stack = list()  # moving the group in one go would give nested list of group instead of each element.
             for i in range(amount):
                 temp_stack.append(cache[from_loc].pop())
 
