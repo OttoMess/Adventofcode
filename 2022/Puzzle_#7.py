@@ -9,20 +9,14 @@ class puzzle7:
     def __init__(self, path):
         self.file_path = path
         self.input = list()
-        self.files = list()
-        self.levels = int(0)  # the max number of dir in dir levels
 
         print(self.file_path)
 
         start_time = time.time()
         self.read_txt()
         dirs = self.build_structure()
-        # dir_files_size = self.add_file_size_to_dir(dirs)
-        # directory_s = self.add_dir_size_to_dirs(dir_files_size)
-        # directory_s = self.add_dir_size_to_dirs(dirs)
 
         print(f"output part one: {self.find_xSize_dir(dirs, 100000)}")
-        # print(f"output part one: {self.find_xSize_dir(dirs, 100000)}")
         # print(f"output part two: {self.find_marker(14)}")
         print(f"Run time {round(time.time() - start_time, 4)} [sec]\n")
 
@@ -82,18 +76,17 @@ class puzzle7:
 
     def build_structure(self):
         dirs = {"root": 0}
-        files = list()
         depth = ["root"]
         current_dir = "root"
         for line in self.input:
             if line == "$ ls" or line == "$ cd /":
                 continue
+
             elif line == "$ cd ..":
                 prev_dir_size = dirs[current_dir]
                 temp = ":" + depth.pop()
                 q = current_dir.rfind(temp)
                 current_dir = current_dir[:q]
-                # current_dir = current_dir.replace(str(temp), "")
                 dirs[current_dir] += prev_dir_size
 
             elif line.startswith("$ cd "):
@@ -106,45 +99,12 @@ class puzzle7:
                 name = d[1]
                 dirs[current_dir + ":" + name] = 0
 
-                if len(depth) > self.levels:
-                    self.levels = len(depth)
-                    # find the highest level of dir in dirs
-
             else:
                 temp = line.split()
                 file_size = int(temp[0])
                 dirs[current_dir] += file_size
 
-        self.files = files
         return dirs
-
-    def add_file_size_to_dir(self, dirs):
-        for file in self.files:
-            for dir in dirs:
-                if file.directory == dir.name and file.chain[:-1] == dir.chain:
-                    dir.size += file.size
-                    break
-        return dirs
-
-    def add_dir_size_to_dirs(self, dirs):
-        while self.levels > 0:
-            self.levels -= 1
-            for dir in dirs:
-                if dir.level == self.levels and len(dir.sub_folders) != 0:
-                    for sub_dir in dir.sub_folders:
-                        for d in dirs:
-                            if d.name == sub_dir and d.chain[:-1] == dir.chain:
-                                dir.size += d.size
-        return dirs
-
-    # def find_xSize_dir(self, dirs, threshold):
-    #     counter = 0
-    #     folder = list()
-    #     for dir in dirs:
-    #         if dir.size < threshold:
-    #             counter += dir.size
-    #             folder.append(dir.name)
-    #     return counter
 
     def find_xSize_dir(self, dirs, threshold):
         counter = 0
