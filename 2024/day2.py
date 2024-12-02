@@ -28,24 +28,12 @@ class Puzzle2:
         self.input = data
 
     def part1(self):
-        counter = 0
-        for line in self.input:
-            if self.validate(line):
-                counter += 1
-        return counter
-
-    @staticmethod
-    def validate(line):
-        delta = [line[i] - line[i - 1] for i in range(1, len(line))]
-
-        if all([d in [1, 2, 3] for d in delta]):
-            return True
-        elif all([d in [-1, -2, -3] for d in delta]):
-            return True
-        else:
-            False
+        return sum([1 for i in self.input if self.validate(i)])
 
     def part2(self):
+        """
+        Brute force try each line with 1 element missing. If valid moves to next line.
+        """
         counter = 0
         for line in self.input:
             for i, _ in enumerate(line):
@@ -53,8 +41,21 @@ class Puzzle2:
                 if self.validate(test_line):
                     counter += 1
                     break
-
         return counter
+
+    @staticmethod
+    def validate(record):
+        """
+        from the puzzle rules the difference needs to be between 1 and 3. Can be all positive or all negative.
+        This knowledge is used to check if a record is valid.
+        """
+        delta = [record[i] - record[i - 1] for i in range(1, len(record))]
+        if all([d in [1, 2, 3] for d in delta]):
+            return True
+        elif all([d in [-1, -2, -3] for d in delta]):
+            return True
+        else:
+            False
 
 
 Puzzle2(EXAMPLE)
