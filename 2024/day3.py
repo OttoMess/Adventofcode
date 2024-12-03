@@ -38,7 +38,7 @@ class Puzzle3:
         if instructions:
             found_dont = True
             while found_dont:
-                found_dont, pruned = self.cur_dont_range(pruned)
+                found_dont, pruned = self.cut_dont_range(pruned)
 
         while m < len(pruned):
             start, end, found = self.find_mul(pruned[m:])
@@ -77,7 +77,7 @@ class Puzzle3:
                 return start, end, found
 
     @staticmethod
-    def cur_dont_range(line):
+    def cut_dont_range(line):
         """
         cut range where don't instruction is valid
         """
