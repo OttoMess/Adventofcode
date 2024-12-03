@@ -1,5 +1,4 @@
 import time
-from collections import Counter
 
 EXAMPLE = "AoC_inputs/2024/day_2_example.txt"
 INPUT = "AoC_inputs/2024/day_2.txt"
@@ -9,7 +8,6 @@ class Puzzle2:
     def __init__(self, path):
         self.file_path = path
         self.input = list()
-        self.reports = list()
 
         print(self.file_path)
 
@@ -55,7 +53,7 @@ class Puzzle2:
         elif all([d in [-1, -2, -3] for d in delta]):
             return True
         else:
-            False
+            return False
 
 
 Puzzle2(EXAMPLE)
