@@ -5,7 +5,7 @@ EXAMPLE = "AoC_inputs/2024/day_5_example.txt"
 INPUT = "AoC_inputs/2024/day_5.txt"
 
 
-class Puzzle4:
+class Puzzle5:
     def __init__(self, path):
         start_time = time.time()
 
@@ -33,5 +33,5 @@ class Puzzle4:
         return
 
 
-Puzzle4(EXAMPLE)
-Puzzle4(INPUT)
+Puzzle5(EXAMPLE)
+Puzzle5(INPUT)
