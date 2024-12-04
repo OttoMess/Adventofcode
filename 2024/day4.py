@@ -1,6 +1,7 @@
 import time
 import re
 
+TEST = "AoC_inputs/2024/day_4_test.txt"
 EXAMPLE = "AoC_inputs/2024/day_4_example.txt"
 INPUT = "AoC_inputs/2024/day_4.txt"
 
@@ -30,11 +31,28 @@ class Puzzle4:
         default = self.find_xmas(self.input)
         transposed = self.find_xmas(self.transpose(self.input))
         diagonal = self.find_xmas(self.diagonal(self.input))
-        diagonal_reverse = self.diagonal_reverse(self.input)
-        return default + transposed + diagonal
+        diagonal_reverse = self.find_xmas(self.diagonal_reverse(self.input))
+        return default + transposed + diagonal + diagonal_reverse
 
     def part2(self):
-        return
+        a_index = list()
+        for i in range(1, len(self.input) - 1):
+            a_index.append([i, self.find_a_index(self.input[i])])
+        data = self.input
+        crosses = 0
+        for line in a_index:
+            y = line[0]
+            for i in line[1]:
+                x = i
+                one = data[y - 1][x - 1] + data[y][x] + data[y + 1][x + 1]
+                two = data[y + 1][x - 1] + data[y][x] + data[y - 1][x + 1]
+                if one in ["MAS", "SAM"] and two in ["MAS", "SAM"]:
+                    crosses += 1
+        return crosses
+
+    @staticmethod
+    def find_a_index(line):
+        return [i for i in range(1, len(line) - 1) if line[i] == "A"]
 
     @staticmethod
     def find_xmas(data):
@@ -71,26 +89,24 @@ class Puzzle4:
 
         return stack
 
-    @staticmethod  # TODO update and check if it works
+    @staticmethod
     def diagonal_reverse(data):
         stack = list()
         for b in range(len(data[0])):
             w = ""
-            for i in range(len(data[0]) - b, 0):
-                w += data[i][i - b]
+            for i in range(len(data[0]) - b):
+                w += data[i][len(data) - 1 - i - b]
             stack.append(w)
 
         for a in range(1, len(data)):
             w = ""
             for i in range(len(data[0]) - a):
-                w += data[a + i][i]
+                w += data[a + i][len(data[0]) - 1 - i]
             stack.append(w)
 
         return stack
 
-    # TODO build function to make move the data into a diagonal. Likely need 2 functions 45° and -45°
-    # start positions top left side[i,j] add next pos would be [i+1, j+1]
 
-
+# Puzzle4(TEST)
 Puzzle4(EXAMPLE)
 Puzzle4(INPUT)
