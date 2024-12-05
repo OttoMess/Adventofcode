@@ -28,83 +28,65 @@ class Puzzle4:
         self.input = data
 
     def part1(self):
-        default = self.find_xmas(self.input)
-        transposed = self.find_xmas(self.transpose(self.input))
-        diagonal = self.find_xmas(self.diagonal(self.input))
-        diagonal_reverse = self.find_xmas(self.diagonal_reverse(self.input))
-        return default + transposed + diagonal + diagonal_reverse
+        directions = (
+            (1, 0),
+            (1, 1),
+            (0, 1),
+            (-1, -1),
+            (0, -1),
+            (-1, 0),
+            (1, -1),
+            (-1, 1),
+        )
+        x_index = list()
+        for i in range(len(self.input)):
+            x_index.append([i, self.find_index(self.input[i], "X")])
+
+        words = list()
+        data = self.input
+        y_lim = len(data)
+        x_lim = len(data[0])
+        for index in x_index:
+            y = index[0]
+            for i in index[1]:
+                x = i
+                for step in directions:
+                    word = data[y][x]
+                    for j in range(1, 4):
+                        next_y = y + (j * step[0])
+                        next_x = x + (j * step[1])
+                        if 0 <= next_x < x_lim and 0 <= next_y < y_lim:
+                            word += data[next_y][next_x]
+                        else:
+                            break
+                    if word == "XMAS":
+                        words.append(word)
+
+        return len(words)
 
     def part2(self):
         a_index = list()
         for i in range(1, len(self.input) - 1):
-            a_index.append([i, self.find_a_index(self.input[i])])
+            a_index.append([i, self.find_index(self.input[i], "A")])
         data = self.input
         crosses = 0
+        y_lim = len(data)
+        x_lim = len(data[0])
         for line in a_index:
             y = line[0]
-            for i in line[1]:
-                x = i
-                one = data[y - 1][x - 1] + data[y][x] + data[y + 1][x + 1]
-                two = data[y + 1][x - 1] + data[y][x] + data[y - 1][x + 1]
-                if one in ["MAS", "SAM"] and two in ["MAS", "SAM"]:
-                    crosses += 1
+            if 1 <= y < y_lim - 1:
+                for i in line[1]:
+                    x = i
+                    if 1 <= x < x_lim - 1:
+                        one = data[y - 1][x - 1] + data[y][x] + data[y + 1][x + 1]
+                        two = data[y + 1][x - 1] + data[y][x] + data[y - 1][x + 1]
+                        if one in ["MAS", "SAM"] and two in ["MAS", "SAM"]:
+                            crosses += 1
         return crosses
 
     @staticmethod
-    def find_a_index(line):
-        return [i for i in range(1, len(line) - 1) if line[i] == "A"]
-
-    @staticmethod
-    def find_xmas(data):
-        collect = 0
-        for line in data:
-            normal = re.findall("XMAS", line)
-            inverse = re.findall("SAMX", line)
-            collect += len(normal + inverse)
-        return collect
-
-    @staticmethod
-    def transpose(data):
-        transposed = ["" for i in data]
-        for line in data:
-            for i, _ in enumerate(line):
-                transposed[i] += line[i]
-
-        return transposed
-
-    @staticmethod
-    def diagonal(data):
-        stack = list()
-        for b in range(len(data[0])):
-            w = ""
-            for i in range(len(data[0]) - b):
-                w += data[i][b + i]
-            stack.append(w)
-
-        for a in range(1, len(data)):
-            w = ""
-            for i in range(len(data[0]) - a):
-                w += data[a + i][i]
-            stack.append(w)
-
-        return stack
-
-    @staticmethod
-    def diagonal_reverse(data):
-        stack = list()
-        for b in range(len(data[0])):
-            w = ""
-            for i in range(len(data[0]) - b):
-                w += data[i][len(data) - 1 - i - b]
-            stack.append(w)
-
-        for a in range(1, len(data)):
-            w = ""
-            for i in range(len(data[0]) - a):
-                w += data[a + i][len(data[0]) - 1 - i]
-            stack.append(w)
-
-        return stack
+    def find_index(line, string):
+        return [i for i in range(len(line)) if line[i] == string]
 
 
 # Puzzle4(TEST)
