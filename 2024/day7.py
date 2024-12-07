@@ -39,28 +39,20 @@ class Puzzle7:
                 collector += ans
         return collector
 
-    @staticmethod
-    def plus_and_mul(ans, vals):
-        """
-        since there are 2 options. using binary info. if there are 3 values there are 2 operator.
-        2 operators will give 2**2 = 4 options. Every option is present in the binary form of a int from range(0,4)
-        0 is used to represent + and 1 is used for *.
-        """
-        options = 2 ** (len(vals) - 1)
-
-        for i in range(options):
-            test_value = vals[0]
-            bin_options = format(i, "b").zfill(options - 1)
-
-            for j in range(1, len(vals)):
-                if bin_options[-j] == "0":
-                    test_value += vals[j]
-                elif bin_options[-j] == "1":
-                    test_value *= vals[j]
-
-            if test_value == ans:
-                return True
-        return False
+    def part2(self):
+        collector = 0
+        loop_time = time.time()
+        for i, ans in enumerate(self.answers):
+            if (i + 1) % 50 == 0:
+                print(
+                    f"{i + 1} of {len(self.answers)} done {round(time.time() - loop_time, 4)} [sec]"
+                )
+                loop_time = time.time()
+            if self.runner(ans, self.values[i]):
+                collector += ans
+            elif self.runner(ans, self.values[i], True):
+                collector += ans
+        return collector
 
     @staticmethod
     def cal(a, b, operator):
@@ -83,41 +75,6 @@ class Puzzle7:
             if check == ans:
                 return True
         return False
-
-    def part2(self):
-        collector = 0
-        which_to_count = list()
-        loop_time = time.time()
-        for i, ans in enumerate(self.answers):
-            if (i + 1) % 50 == 0:
-                print(
-                    f"{i + 1} of {len(self.answers)} done {round(time.time() - loop_time, 4)} [sec]"
-                )
-                loop_time = time.time()
-            if self.plus_and_mul(ans, self.values[i]):
-                which_to_count.append(i)
-                collector += ans
-            elif self.runner(ans, self.values[i]):
-                collector += ans
-                which_to_count.append(i)
-        return collector
-
-        return
-
-
-def test(number):
-    for i in range(number):
-        print(i, i % 2, i % 3)
-
-
-def factorial(x):
-    """This is a recursive function
-    to find the factorial of an integer"""
-
-    if x == 1:
-        return 1
-    else:
-        return x * factorial(x - 1)
 
 
 Puzzle7(EXAMPLE)
