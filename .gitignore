@@ -2,3 +2,4 @@
 *.exe
 /venv
 /AoC_inputs
+2024/scratch .py

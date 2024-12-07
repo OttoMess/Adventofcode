@@ -34,21 +34,18 @@ class Puzzle7:
 
     def part1(self):
         collector = 0
-        self.found_part1 = list()
         for i, ans in enumerate(self.answers):
-            if self.plus_and_mult(ans, self.values[i]):
+            if self.runner(ans, self.values[i]):
                 collector += ans
-                self.found_part1.append(i)
         return collector
 
     @staticmethod
-    def plus_and_mult(ans, vals):
+    def plus_and_mul(ans, vals):
         """
         since there are 2 options. using binary info. if there are 3 values there are 2 operator.
         2 operators will give 2**2 = 4 options. Every option is present in the binary form of a int from range(0,4)
         0 is used to represent + and 1 is used for *.
         """
-
         options = 2 ** (len(vals) - 1)
 
         for i in range(options):
@@ -63,44 +60,28 @@ class Puzzle7:
 
             if test_value == ans:
                 return True
-
         return False
 
     @staticmethod
-    def plus_and_mult_and_combine(ans, vals):
-        """
-        There are 3 options. using binary info.
-        2 operators will give 3**2 = 9 options.
-        2 bits per options set needed
-        00 = +
-        01 = *
-        10 = ||
-        11 = nothing
-        """
+    def cal(a, b, operator):
+        if operator == "+":
+            return a + b
+        elif operator == "*":
+            return a * b
+        elif operator == "||":
+            return int(str(a) + str(b))
 
-        operators = len(vals) - 1
-        int_search = 2 ** (operators * 2)
-        # BUG to high for part 2
-        # 189207837752840
-
-        # BUG in the current code all operators can be || not just one. Needs to be fixed
-        for i in range(int_search):
-            test_value = vals[0]
-            bin_options = format(i, "b").zfill(operators * 2)
-
-            for j in range(1, len(vals)):
-                check = bin_options[-2:]
-                bin_options = bin_options[:-2]
-                if check == "00":
-                    test_value += vals[j]
-                elif check == "01":
-                    test_value *= vals[j]
-                elif check == "10":
-                    test_value = int(str(test_value) + str(vals[j]))
-
-            if test_value == ans:
+    def runner(self, ans, vals, combine=False):
+        operators = ["+", "*"]
+        if combine:
+            operators.append("||")
+        product = list(itertools.product(operators, repeat=len(vals) - 1))
+        for operator_set in product:
+            check = vals[0]
+            for i in range(1, len(vals)):
+                check = self.cal(check, vals[i], operator_set[i - 1])
+            if check == ans:
                 return True
-
         return False
 
     def part2(self):
@@ -108,20 +89,35 @@ class Puzzle7:
         which_to_count = list()
         loop_time = time.time()
         for i, ans in enumerate(self.answers):
-            if (i + 1) % 10 == 0:
+            if (i + 1) % 50 == 0:
                 print(
                     f"{i + 1} of {len(self.answers)} done {round(time.time() - loop_time, 4)} [sec]"
                 )
                 loop_time = time.time()
-            if self.plus_and_mult(ans, self.values[i]):
+            if self.plus_and_mul(ans, self.values[i]):
                 which_to_count.append(i)
                 collector += ans
-            elif self.plus_and_mult_and_combine(ans, self.values[i]):
+            elif self.runner(ans, self.values[i]):
                 collector += ans
                 which_to_count.append(i)
         return collector
 
         return
+
+
+def test(number):
+    for i in range(number):
+        print(i, i % 2, i % 3)
+
+
+def factorial(x):
+    """This is a recursive function
+    to find the factorial of an integer"""
+
+    if x == 1:
+        return 1
+    else:
+        return x * factorial(x - 1)
 
 
 Puzzle7(EXAMPLE)
