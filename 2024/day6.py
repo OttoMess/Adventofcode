@@ -4,11 +4,13 @@ import time
 EXAMPLE = "AoC_inputs/2024/day_6_example.txt"
 INPUT = "AoC_inputs/2024/day_6.txt"
 
-"""  x ->
-y      1 2 3
-|    1   
-V    2
-     3
+""" 
+mapping used for the coordinates
+     x ->
+y      0 1 2
+|    0 . . . 
+V    1 . . .
+     2 . . .
 """
 
 
@@ -20,6 +22,7 @@ class Puzzle6:
         self.input = list()
         self.visited = list()
 
+        # directions in the grid the guard will follow
         self.steps = (-1, 0), (0, 1), (1, 0), (0, -1)
 
         print(self.file_path)
@@ -51,6 +54,7 @@ class Puzzle6:
         while True:
             x += self.steps[way][1]
             y += self.steps[way][0]
+            # check if x and y are out of bound
             if 0 <= x <= (len(self.input[0]) - 1) and 0 <= y <= (len(self.input) - 1):
                 if self.input[y][x] == "#":
                     x -= self.steps[way][1]
@@ -75,7 +79,7 @@ class Puzzle6:
             printer += 1
             if printer % 500 == 0:
                 print(
-                    f"{printer} of {len(self.visited)} done.  {round(time.time() - loop_time, 4)} [sec] last 500 "
+                    f"{printer} of {len(self.visited)} done in {round(time.time() - loop_time, 4)}"
                 )
                 loop_time = time.time()
         return len(valid_obstacle)
@@ -96,6 +100,7 @@ class Puzzle6:
                     and y_next == obstacle[0]
                     or self.input[y_next][x_next] == "#"
                 ):
+                    # only adding points before collision, reducing the search time / list size
                     visited.append((y, x, self.steps[way]))
                     way = (way + 1) % 4
                 else:
