@@ -1,5 +1,4 @@
 import time
-import re
 
 TEST = "AoC_inputs/2024/day_4_test.txt"
 EXAMPLE = "AoC_inputs/2024/day_4_example.txt"
