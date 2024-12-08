@@ -26,23 +26,22 @@ class Puzzle8:
                 data.append(line.strip())
         self.input = data
 
-    def duplicate(self):
-        duplicate = list()
-        for line in self.input:
-            duplicate.append("".join(["." for i in line]))
-        return duplicate
-
-    def part1(self):
-        node_map = self.duplicate()
-        nodes = list()
+    @staticmethod
+    def find_antennas(data):
         book = dict()
-        for y, line in enumerate(self.input):
+        for y, line in enumerate(data):
             for x, cha in enumerate(line):
                 if cha != ".":
                     if cha not in book.keys():
                         book[cha] = [(y, x)]
                     else:
                         book[cha].append((y, x))
+        return book
+
+    def part1(self):
+        node_map = self.duplicate()
+        nodes = list()
+        book = self.find_antennas(self.input)
         for antenna in book.keys():
             pairs = list(itertools.combinations(book[antenna], 2))
             for pair in pairs:
@@ -68,13 +67,42 @@ class Puzzle8:
                     node_map = self.place_antinode(node_map, b)
         return len(nodes)
 
+    def part2(self):
+        node_map = self.duplicate()
+        nodes = list()
+        book = self.find_antennas(self.input)
+        for antenna in book.keys():
+            pairs = list(itertools.combinations(book[antenna], 2))
+            for pair in pairs:
+                delta_x = pair[0][1] - pair[1][1]
+                delta_y = pair[0][0] - pair[1][0]
+
+                a = [pair[0][0], pair[0][1]]
+                while 0 <= a[0] < len(self.input) and 0 <= a[1] < len(self.input[0]):
+                    if a not in nodes:
+                        nodes.append(a)
+                    node_map = self.place_antinode(node_map, a)
+                    a = [a[0] + delta_y, a[1] + delta_x]
+
+                a = [pair[0][0] - delta_y, pair[0][1] - delta_x]
+                while 0 <= a[0] < len(self.input) and 0 <= a[1] < len(self.input[0]):
+                    if a not in nodes:
+                        nodes.append(a)
+                    node_map = self.place_antinode(node_map, a)
+                    a = [a[0] - delta_y, a[1] - delta_x]
+
+        return len(nodes)
+
+    def duplicate(self):  # only for visual purposes
+        duplicate = list()
+        for line in self.input:
+            duplicate.append("".join(["." for i in line]))
+        return duplicate
+
     @staticmethod
-    def place_antinode(map, node):
+    def place_antinode(map, node):  # only for visual purposes
         map[node[0]] = map[node[0]][: node[1]] + "#" + map[node[0]][node[1] + 1 :]
         return map
-
-    def part2(self):
-        return
 
 
 Puzzle8(EXAMPLE)
