@@ -27,17 +27,53 @@ class Puzzle9:
                 data = line
         self.input = data
 
-    """
-    6349343813585 to low
-    """
-
     def part1(self):
+        data, single_files, _ = self.process_info()
+        new = list()
+        self.a = len(data)
+        # end results will be length of all single files
+        for i in range(len(single_files)):
+            if data[i] == ".":
+                new.append(single_files.pop())
+            else:
+                new.append(data[i])
+
+        return self.count(new)
+
+    def part2(self):
+        data, _, blocks = self.process_info()
+
+        blocks.reverse()  # search from left to right for free space that will fit the block
+        for block in blocks:
+            for i in range(block.index):  # prevent finding free-space right to block
+                if data[i] == ".":
+                    free_space = 1
+                    for k in range(1, len(data) - i):
+                        pointer = k + i
+                        if data[pointer] == ".":
+                            free_space += 1
+                        else:
+                            break
+                    # check of block fits in free space
+                    if block.amount <= free_space:
+                        for w in range(block.amount):
+                            data[i + w] = block.id
+                            data[block.index + w] = "."
+                        break
+        return self.count(data)
+
+    def process_info(self):
         id_number = 0
-        id_list = list()
+        blocks = list()
         data = list()
-        for i, c in enumerate(self.input):
-            amount = int(c)
-            if i % 2 == 0:
+        id_list = list()
+        for i, d in enumerate(self.input):
+            amount = int(d)
+            if amount == 0:
+                continue
+            # alternate between data and free space
+            elif i % 2 == 0:
+                blocks.append(Block(id_number, amount, len(data)))
                 for _ in range(amount):
                     data.append(id_number)
                     id_list.append(id_number)
@@ -45,58 +81,22 @@ class Puzzle9:
             else:
                 for _ in range(amount):
                     data.append(".")
+        return data, id_list, blocks
 
-        new = list()
-        self.a = len(data)
-        for i in range(len(id_list)):
-            if data[i] == ".":
-                new.append(id_list.pop())
-            else:
-                new.append(data[i])
-
+    @staticmethod
+    def count(data):
         counter = 0
-        for i, value in enumerate(new):
-            counter += i * value
+        for i, value in enumerate(data):
+            if value != ".":
+                counter += i * value
         return counter
 
-    def part2(self):
-        id_number = 0
-        block_list = list()
-        data = list()
-        for i, d in enumerate(self.input):
-            amount = int(d)
-            if amount == 0:
-                continue
-            elif i % 2 == 0:
-                for _ in range(amount):
-                    data.append([id_number, amount])
-                block_list.append([id_number, amount])
-                id_number += 1
-            else:
-                for _ in range(amount):
-                    data.append([".", amount])
-        new = list()
-        block_list.reverse()
-        for block in block_list:
-            # search from lest to right for free space that will fit the block
-            for i, d in enumerate(data):
-                if d[0] != ".":
-                    continue
-                else:
-                    free_space = 1
-                    for k in range(1, len(data) - i):
-                        pointer = k + i
-                        if data[pointer][0] == ".":
-                            free_space += 1
-                        else:
-                            break
-                    if block[1] <= free_space:
-                        data = [[".", 0] if item == block else item for item in data]
-                        for w in range(block[1]):
-                            data[i + w] = block
-                        break
 
-        return
+@dataclass
+class Block:
+    id: int
+    amount: int
+    index: int
 
 
 Puzzle9(EXAMPLE)
