@@ -57,7 +57,8 @@ class Puzzle10:
         trails = 0
         queue = list()
         priority = 0  # lower is better
-        for start in self.starts:
+        while len(self.starts) > 0:
+            start = self.starts.pop(0)
             map_view = self.clean_map()  # for vitalization only
             tops_reached = 0
             heappush(queue, (priority, start))
@@ -73,8 +74,7 @@ class Puzzle10:
                     tops_reached += 1
 
                 """adding secondary option(s) to start list.
-                each split will search to "9"
-                adding elements while looping over element in for loop not ideal"""
+                each split will search to "9" """
                 options = self.adjacent(loc[1])
                 if len(options) > 0:
                     for p, option in enumerate(options):
