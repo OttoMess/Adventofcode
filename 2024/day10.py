@@ -1,5 +1,5 @@
 import time
-from heapq import heappush, heappop, heappushpop
+from heapq import heappush, heappop
 
 TEST = "AoC_inputs/2024/day_10_test.txt"
 EXAMPLE = "AoC_inputs/2024/day_10_example.txt"
