@@ -71,9 +71,10 @@ class Puzzle12:
 
         yield sum([i[1] * len(i[0]) for i in plots])
 
+        # part 2
         fences_bulk = 0
         for plot in plots:
-            fences_bulk += self.find_corners(plot)
+            fences_bulk += self.buck_fences(plot)
 
         yield fences_bulk
 
@@ -95,33 +96,27 @@ class Puzzle12:
         fences: int = 4 - len(adjacent)
         return adjacent, fences
 
-    def bulk_discount(self, plot):  # BUG does not work
-        steps = ((-1, 0), (0, 1), (1, 0), (0, -1), (-1, 0))  # clockwise search
-        directions = ("up", "right", "down", "left", "up")
-        fences = plot[1]
-        queue = self.find_a_left_top_corner(plot)
-        # previous = None
-        visited = set()
-        while len(queue) > 0:
-            node = queue.pop()
-            y = node[0]
-            x = node[1]
-            for i in range(1, len(steps)):
-                next = (y + steps[i][0], x + steps[i][1])
-                check = (y + steps[i - 1][0], x + steps[i - 1][1])
-                if (
-                    next in plot[0]
-                    and check not in plot[0]
-                    and (next, directions[i]) not in visited
-                ):
-                    queue.append(next)
-                    visited.add((next, directions[i]))
-                    # previous = node
-                    break
-        bulk = (fences - len(visited)) * len(plot[0])
-        return bulk
+    def buck_fences(self, plot):
+        """
+        using mapping around the node we look at to see if its a corner.
+        For each corner found we add 1 fens. It is a loop so +1 for each corner works.
+        N is node in focus
+        A are other nodes in same field /plot.
+        . is outside of grid
 
-    def find_corners(self, plot):
+          A
+        A N .
+          .
+        If it is a outward point we add 2 fences
+        . . .
+        . N .
+        A A A
+
+        example of in inside corner check. Need to be used . location is not in field
+        N .
+        A A
+        """
+
         steps = ((0, 1), (1, 0), (0, -1), (-1, 0))
         sides = 0
         outside_corner = [
@@ -139,21 +134,21 @@ class Puzzle12:
         ]
 
         for node in plot[0]:
-            # check if outward point
             matches = set()
-
             for step in steps:
                 next = (node[0] + step[0], node[1] + step[1])
                 if next in plot[0]:
                     matches.add(step)
+            # check if outward point, single node in plot or if is outside corner
             if len(matches) == 1:
                 sides += 2
             elif len(matches) == 0:
                 sides += 4
             elif matches in outside_corner:
                 sides += 1
+
+            # checking if there are inside corners
             for corner in inside_corner:
-                # inside = list()
                 one = (node[0] + corner[0][0], node[1] + corner[0][1])
                 two = (node[0] + corner[1][0], node[1] + corner[1][1])
                 three = (node[0] + corner[2][0], node[1] + corner[2][1])
@@ -162,25 +157,7 @@ class Puzzle12:
 
         return sides * len(plot[0])
 
-    @staticmethod
-    def find_a_left_top_corner(plot):
-        steps = ((0, -1), (-1, 0))
-        queue = [list(plot[0])[0]]
-        while len(queue) > 0:
-            node = queue.pop()
-            for step in steps:
-                next = (node[0] + step[0], node[1] + step[1])
-                if next in plot[0]:
-                    queue.append(next)
-                    break
-        return [node]
 
-    @dataclass
-    class plot:
-        symbol: str
-        coordinates: list
-
-
-# Puzzle12(EXAMPLE)
+Puzzle12(EXAMPLE)
 Puzzle12(TEST)
 Puzzle12(INPUT)
