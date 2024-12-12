@@ -66,14 +66,14 @@ class Puzzle12:
                         sub_queue.append(n)
                         field.add(n)
 
-            plots.append((field, fences_total))
+            plots.append((field, fences_total, crop))
             [queue.remove(f) for f in field]  # nodes in crop field should be removed
 
         yield sum([i[1] * len(i[0]) for i in plots])
 
         fences_bulk = 0
         for plot in plots:
-            fences_bulk += self.bulk_discount(plot)
+            fences_bulk += self.find_corners(plot)
 
         yield fences_bulk
 
@@ -121,6 +121,47 @@ class Puzzle12:
         bulk = (fences - len(visited)) * len(plot[0])
         return bulk
 
+    def find_corners(self, plot):
+        steps = ((0, 1), (1, 0), (0, -1), (-1, 0))
+        sides = 0
+        outside_corner = [
+            {(0, 1), (1, 0)},
+            {(1, 0), (0, -1)},
+            {(0, -1), (-1, 0)},
+            {(0, 1), (-1, 0)},
+        ]
+
+        inside_corner = [
+            ((0, -1), (1, -1), (1, 0)),
+            ((1, 0), (1, 1), (0, 1)),
+            ((0, 1), (-1, 1), (-1, 0)),
+            ((-1, 0), (-1, -1), (0, -1)),
+        ]
+
+        for node in plot[0]:
+            # check if outward point
+            matches = set()
+
+            for step in steps:
+                next = (node[0] + step[0], node[1] + step[1])
+                if next in plot[0]:
+                    matches.add(step)
+            if len(matches) == 1:
+                sides += 2
+            elif len(matches) == 0:
+                sides += 4
+            elif matches in outside_corner:
+                sides += 1
+            for corner in inside_corner:
+                # inside = list()
+                one = (node[0] + corner[0][0], node[1] + corner[0][1])
+                two = (node[0] + corner[1][0], node[1] + corner[1][1])
+                three = (node[0] + corner[2][0], node[1] + corner[2][1])
+                if one in plot[0] and two in plot[0] and three not in plot[0]:
+                    sides += 1
+
+        return sides * len(plot[0])
+
     @staticmethod
     def find_a_left_top_corner(plot):
         steps = ((0, -1), (-1, 0))
@@ -140,6 +181,6 @@ class Puzzle12:
         coordinates: list
 
 
-Puzzle12(EXAMPLE)
+# Puzzle12(EXAMPLE)
 Puzzle12(TEST)
 Puzzle12(INPUT)
