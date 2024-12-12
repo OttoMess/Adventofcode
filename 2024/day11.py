@@ -1,5 +1,4 @@
 import time
-from heapq import heappush, heappop
 
 EXAMPLE = "AoC_inputs/2024/day_11_example.txt"
 INPUT = "AoC_inputs/2024/day_11.txt"
@@ -14,8 +13,9 @@ class Puzzle11:
 
         print(self.file_path)
 
-        print(f"output part one: {self.part1()}")
-        print(f"output part two: {self.part2()}")
+        answer = self.part1and2()
+        print(f"output part one: {next(answer)}")
+        print(f"output part two: {next(answer)}")
         print(f"Run time {round(time.time() - start_time, 4)} [sec]\n")
 
     def read_txt(self):
@@ -24,20 +24,15 @@ class Puzzle11:
                 data = [int(i) for i in line.strip().split()]
         return data
 
-    def part1(self):
+    def part1and2(self):
         stones = self.read_txt()
         stones_count = {stone: 1 for stone in stones}
-        for _ in range(25):
-            stones_count = self.blink(stones_count)
-        return sum(stones_count.values())
-
-    def part2(self):
-        stones = self.read_txt()
-        stones_count = {stone: 1 for stone in stones}
-        for _ in range(75):
+        for i in range(75):
+            if i == 25:
+                yield sum(stones_count.values())
             stones_count = self.blink(stones_count)
 
-        return sum(stones_count.values())
+        yield sum(stones_count.values())
 
     def blink(self, stones):
         new_stones = dict()
