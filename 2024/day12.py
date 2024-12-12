@@ -99,22 +99,24 @@ class Puzzle12:
     def buck_fences(self, plot):
         """
         using mapping around the node we look at to see if its a corner.
-        For each corner found we add 1 fens. It is a loop so +1 for each corner works.
-        N is node in focus
-        A are other nodes in same field /plot.
-        . is outside of grid
+        For each corner found we add 1 fence. It is a loop so +1 for each corner works.
+            N   is node in focus
+            A   are other nodes in same field /plot.
+            .   is outside of grid
 
+        check for outside corner
           A
         A N .
           .
-        If it is a outward point we add 2 fences
+        If it is a outward point we add 2 fences. For node N we only get single match
         . . .
         . N .
         A A A
 
-        example of in inside corner check. Need to be used . location is not in field
-        N .
-        A A
+        example of in inside corner check. It is needed to check if the . location is not in field
+        the four inside corner checks
+        N .     . A     A A     A N
+        A A     N A     . N     A .
         """
 
         steps = ((0, 1), (1, 0), (0, -1), (-1, 0))
