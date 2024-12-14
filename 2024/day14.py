@@ -104,24 +104,27 @@ class Puzzle14:
             print(line)
         print()
 
-    def check_9block(self, robots):
-        pos = [i["pos"] for i in robots]
+    @staticmethod
+    def check_9block(robots):
+        # checking is there is a block of 9 robot against each other
+        # making set to speed up the lookup
+        pos = set([(i["pos"][0], i["pos"][1]) for i in robots])
         for p in pos:
-            if [p[0] + 1, p[1] + 1] not in pos:
+            if (p[0] + 1, p[1] + 1) not in pos:
                 continue
-            elif [p[0], p[1] + 1] not in pos:
+            elif (p[0], p[1] + 1) not in pos:
                 continue
-            elif [p[0] + 1, p[1]] not in pos:
+            elif (p[0] + 1, p[1]) not in pos:
                 continue
-            elif [p[0] - 1, p[1]] not in pos:
+            elif (p[0] - 1, p[1]) not in pos:
                 continue
-            elif [p[0], p[1] - 1] not in pos:
+            elif (p[0], p[1] - 1) not in pos:
                 continue
-            elif [p[0] - 1, p[1] - 1] not in pos:
+            elif (p[0] - 1, p[1] - 1) not in pos:
                 continue
-            elif [p[0] + 1, p[1] - 1] not in pos:
+            elif (p[0] + 1, p[1] - 1) not in pos:
                 continue
-            elif [p[0] - 1, p[1] + 1] not in pos:
+            elif (p[0] - 1, p[1] + 1) not in pos:
                 return True
         return False
 
