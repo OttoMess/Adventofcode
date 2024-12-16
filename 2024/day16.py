@@ -58,8 +58,8 @@ class Puzzle16:
 
         queue = list()
         heappush(queue, (0, start))
-        for e in paths:
-            heappush(queue, (1e18, e))
+        # for e in paths:
+        #     heappush(queue, (1e18, e))
         visited = set()
         first = True
 
@@ -86,14 +86,16 @@ class Puzzle16:
                     if paths[node]["cost"] + 1 < paths[next]["cost"]:
                         paths[next]["cost"] = paths[node]["cost"] + 1
                         paths[next]["pre"] = node
+                        heappush(queue, (paths[next]["cost"], next))
                 else:
                     if paths[node]["cost"] + 1001 < paths[next]["cost"]:
                         paths[next]["cost"] = paths[node]["cost"] + 1001
                         paths[next]["pre"] = node
+                        heappush(queue, (paths[next]["cost"], next))
 
-                if next not in visited and self.queue_nodes(queue, next):
-                    heappush(queue, (paths[next]["cost"], next))
-                    # heappush(queue, (loops, next))
+                # if next not in visited and self.queue_nodes(queue, next):
+                #     heappush(queue, (paths[next]["cost"], next))
+                #     # heappush(queue, (loops, next))
             # if node[1] == end:
             #     break
             loops += 1
@@ -132,7 +134,7 @@ class Puzzle16:
         nodes = dict()
         for y, line in enumerate(self.map):
             for x, char in enumerate(line):
-                if char != "#" and char != "S":
+                if char != "#":
                     nodes[(y, x)] = {"cost": int(1e18), "pre": ""}
         return nodes
 
