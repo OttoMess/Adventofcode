@@ -15,17 +15,6 @@ V    1 . . .
 So get x,y point from data[y][x]
 input is [x,y]
 """
-
-"""
-##########
-#.......E#
-#.##.#####
-#..#.....#
-##.#####.#
-#S.......#
-##########
-part 1 should be 4013 i get 4019
-"""
 # https://www.reddit.com/r/adventofcode/comments/1hfhgl1/2024_day_16_part_1_alternate_test_case/
 
 
@@ -57,55 +46,46 @@ class Puzzle16:
         paths = self.node_list()
 
         queue = list()
-        heappush(queue, (0, start))
-        for e in paths:
-            heappush(queue, (1e18, e))
+        heappush(queue, (1, start, (0, 1)))
         visited = set()
         first = True
 
-        loops = 1
         while len(queue) > 0:
-            _, node = heappop(queue)
-            visited.add(node)
-            self.update_map(node)
+            node = heappop(queue)
+            visited.add(node[1])
+            self.update_map(node[1])
             if first:
-                paths[node] = {"cost": 0, "pre": (start[0], start[1] - 1)}
+                paths[node[1]] = [0, (0, 0)]
                 first = False
-            if node == (1, 3):
-                print("e")
+            # if node[1] == (9, 2):
+            #     print("e")
             # BUG 105512 to high off by 4 .. ?
 
-            neighbors = self.adjacent(node)
-            for next, step in neighbors:  # BUG not updating value for sites visited
+            # BUG need to store each node in all directions in Paths and visited
+            neighbors = self.adjacent(node[1])
+            for n in neighbors:  # BUG not updating value for sites visited
                 # if n[0] == (2, 4):
                 #     print("break")
                 if (
-                    paths[node]["pre"][0] + step[0] == node[0]
-                    and paths[node]["pre"][1] + step[1] == node[1]
+                    paths[node[1]][1][0] - n[1][0] == node[1][0]
+                    and paths[node[1]][1][1] - n[1][1] == node[1][1]
                 ):
-                    if paths[node]["cost"] + 1 < paths[next]["cost"]:
-                        paths[next]["cost"] = paths[node]["cost"] + 1
-                        paths[next]["pre"] = node
+                    if paths[node[1]][0] + 1 < paths[n[0]][0]:
+                        paths[n[0]][0] = paths[node[1]][0] + 1
+                        paths[n[0]][1] = node[1]
                 else:
-                    if paths[node]["cost"] + 1001 < paths[next]["cost"]:
-                        paths[next]["cost"] = paths[node]["cost"] + 1001
-                        paths[next]["pre"] = node
+                    if paths[node[1]][0] + 1001 < paths[n[0]][0]:
+                        paths[n[0]][0] = paths[node[1]][0] + 1001
+                        paths[n[0]][1] = node[1]
 
-                if next not in visited and self.queue_nodes(queue, next):
-                    heappush(queue, (paths[next]["cost"], next))
-                    # heappush(queue, (loops, next))
-            # if node[1] == end:
-            #     break
-            loops += 1
+                if n[0] not in visited:
+                    heappush(
+                        queue, (paths[n[0]], n[0], n[1])
+                    )  # not updated if new lower path is found
+            if node[1] == end:
+                break
 
-        return paths[end]["cost"]
-
-    @staticmethod
-    def queue_nodes(queue, node):
-        for _, next in queue:
-            if next == node:
-                return False
-        return True
+        return paths[end]
 
     def part2(self):
         return
@@ -132,8 +112,8 @@ class Puzzle16:
         nodes = dict()
         for y, line in enumerate(self.map):
             for x, char in enumerate(line):
-                if char != "#" and char != "S":
-                    nodes[(y, x)] = {"cost": int(1e18), "pre": ""}
+                if char != "#":
+                    nodes[(y, x)] = [int(1e18), (-1, -1)]
         return nodes
 
 
