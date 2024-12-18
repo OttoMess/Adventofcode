@@ -35,19 +35,25 @@ class Puzzle18:
 
         start = (0, 0)
         end = (self.map_size - 1, self.map_size - 1)
-
         for i in range(len(self.bytes)):
             self.update_memory(self.bytes[i])  # only for visual purposes
             grid.remove_node(self.bytes[i])
 
-            if i > self.amount:
-                try:
-                    w = nx.shortest_path_length(grid, start, end)
-                except:
-                    yield self.bytes[i]  # part 2
-                    break
+            if i >= self.amount:
+                # if the new byte landed in memory is not in the shortest path,
+                # no need to check if there still is a shortest path.
+                # greatly improves code speed ~8sec to ~0.2sec
+                if self.bytes[i] in steps:
+                    try:
+                        steps = set(nx.shortest_path(grid, start, end))
+                        path_found = True
+                    except:
+                        # part 2
+                        yield str(self.bytes[i][0]) + "," + str(self.bytes[i][1])
+                        break
             elif i == self.amount - 1:
-                yield nx.shortest_path_length(grid, start, end)  # part 1
+                steps = set(nx.shortest_path(grid, start, end))
+                yield len(steps)  # part 1
 
     def update_memory(self, n, string="#"):  # visual purposes only
         self.memory[n[1]] = (
