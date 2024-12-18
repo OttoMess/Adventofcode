@@ -134,31 +134,13 @@ class Puzzle17:
         loops = 0
         outs = list()
 
-        while loops < 600:
+        while loops < 6000:
             A_start = (A_16 + A_15) // 2
             self.out = list()
             self.pointer = 0
             self.A = A_start
             while self.pointer < len(self.program):
-                opcode = self.program[self.pointer]
-                operand = self.program[self.pointer + 1]
-
-                if opcode == 0:
-                    self.opcode_0(operand)
-                elif opcode == 1:
-                    self.opcode_1(operand)
-                elif opcode == 2:
-                    self.opcode_2(operand)
-                elif opcode == 3:
-                    self.opcode_3(operand)
-                elif opcode == 4:
-                    self.opcode_4()
-                elif opcode == 5:
-                    self.opcode_5(operand)
-                elif opcode == 6:
-                    self.opcode_6(operand)
-                elif opcode == 7:
-                    self.opcode_7(operand)
+                self.program_runner()
 
             if self.program == self.out:
                 print(f"found with A = {A_start }")
@@ -170,8 +152,33 @@ class Puzzle17:
                 A_15 = A_start
             elif len(self.out) == 16:
                 A_16 = A_start
+
+            if A_16 - A15 < 3000:
+                print("last steps")
+
         self.plot(As, outs)
         return A_start, self.out, self.program
+
+    def program_runner(self):
+        opcode = self.program[self.pointer]
+        operand = self.program[self.pointer + 1]
+
+        if opcode == 0:
+            self.opcode_0(operand)
+        elif opcode == 1:
+            self.opcode_1(operand)
+        elif opcode == 2:
+            self.opcode_2(operand)
+        elif opcode == 3:
+            self.opcode_3(operand)
+        elif opcode == 4:
+            self.opcode_4()
+        elif opcode == 5:
+            self.opcode_5(operand)
+        elif opcode == 6:
+            self.opcode_6(operand)
+        elif opcode == 7:
+            self.opcode_7(operand)
 
     def plot(self, A, outs):
         # size = [len(o) for o in outs]
