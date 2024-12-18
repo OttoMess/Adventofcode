@@ -1,5 +1,6 @@
 import time
 from matplotlib import pyplot as plt
+import numpy as np
 
 TEST = "AoC_inputs/2024/day_17_test.txt"
 EXAMPLE = "AoC_inputs/2024/day_17_example.txt"
@@ -17,8 +18,9 @@ class Puzzle17:
         self.read_txt()
 
         print(f"output part one: {self.part1()}")
-        # print(f"output part two: {self.part2()}")
-        self.find_start_len16()
+        print(f"output part two: {self.part2()}")
+        # self.find_start_len16()
+        # self.find_start_len17()
         print(f"Run time {round(time.time() - start_time, 4)} [sec]\n")
 
     def read_txt(self):
@@ -88,97 +90,117 @@ class Puzzle17:
 
 
         """
-        A_start = int(3.5e13)
-        As = list()
-        loops = 0
-        outs = list()
-        while loops < 60:
-            self.out = list()
-            self.pointer = 0
-            self.A = A_start
-            while self.pointer < len(self.program):
-                opcode = self.program[self.pointer]
-                operand = self.program[self.pointer + 1]
+        lower_edge = self.find_start_len16()
+        upper_edge = self.find_start_len17()
 
-                if opcode == 0:
-                    self.opcode_0(operand)
-                elif opcode == 1:
-                    self.opcode_1(operand)
-                elif opcode == 2:
-                    self.opcode_2(operand)
-                elif opcode == 3:
-                    self.opcode_3(operand)
-                elif opcode == 4:
-                    self.opcode_4()
-                elif opcode == 5:
-                    self.opcode_5(operand)
-                elif opcode == 6:
-                    self.opcode_6(operand)
-                elif opcode == 7:
-                    self.opcode_7(operand)
+        search = np.linspace(1.054e14, 1.408e14, 2500)
 
-            if self.program == self.out:
-                print(f"found with A = {A_start }")
-                return A_start, self.out, self.program
-            loops += 1
-            outs.append(len(self.out))
-            As.append(A_start)
-            A_start = int(A_start * 1.005)
-        self.plot(As, outs)
-        return A_start, self.out, self.program
+        output = list()
+        second = list()
+        third = list()
+        input = list()
+        A_start = lower_edge
+        for A in search:
+            # input.append(A)
+            self.program_runner(int(A))
+            temp = "".join([str(j) for j in self.out])
+            output.append(int(temp[-1]))
+            second.append(int(temp[-2]))
+            third.append(int(temp[-3]))
+
+            # A_start = int(A_start * 1.1)
+        plt.plot(search, output)
+        plt.plot(search, second)
+        plt.plot(search, third)
+        plt.show()
+        return
 
     def find_start_len16(self):
-        A_15 = int(3.5184e13)
-        A_16 = int(3.51851e13)
-        As = list()
-        loops = 0
-        outs = list()
-
-        while loops < 6000:
-            A_start = (A_16 + A_15) // 2
-            self.out = list()
-            self.pointer = 0
-            self.A = A_start
-            while self.pointer < len(self.program):
-                self.program_runner()
+        A_low = int(3.5184e13)
+        A_high = int(3.51851e13)
+        while True:
+            A_start = (A_high + A_low) // 2
+            self.program_runner(A_start)
 
             if self.program == self.out:
                 print(f"found with A = {A_start }")
                 return A_start, self.out, self.program
-            loops += 1
-            outs.append(len(self.out))
-            As.append(A_start)
+
             if len(self.out) == 15:
-                A_15 = A_start
+                A_low = A_start
             elif len(self.out) == 16:
-                A_16 = A_start
+                A_high = A_start
 
-            if A_16 - A15 < 3000:
-                print("last steps")
+            if A_high - A_low < 50:
+                break
 
-        self.plot(As, outs)
-        return A_start, self.out, self.program
+        A_start = A_low
+        while True:
+            self.program_runner(A_start)
 
-    def program_runner(self):
-        opcode = self.program[self.pointer]
-        operand = self.program[self.pointer + 1]
+            if len(self.out) == 16:
+                print(f"found start of 16 lengths outputs {A_start}")
+                break
+            else:
+                A_start += 1
 
-        if opcode == 0:
-            self.opcode_0(operand)
-        elif opcode == 1:
-            self.opcode_1(operand)
-        elif opcode == 2:
-            self.opcode_2(operand)
-        elif opcode == 3:
-            self.opcode_3(operand)
-        elif opcode == 4:
-            self.opcode_4()
-        elif opcode == 5:
-            self.opcode_5(operand)
-        elif opcode == 6:
-            self.opcode_6(operand)
-        elif opcode == 7:
-            self.opcode_7(operand)
+        return A_start
+
+    def find_start_len17(self):
+        A_low = int(2.77e14)
+        A_high = int(3e14)
+        while True:
+            A_start = (A_high + A_low) // 2
+            self.program_runner(A_start)
+
+            if self.program == self.out:
+                print(f"found with A = {A_start }")
+                return A_start, self.out, self.program
+
+            if len(self.out) == 16:
+                A_low = A_start
+            elif len(self.out) == 17:
+                A_high = A_start
+
+            if A_high - A_low < 50:
+                break
+
+        A_start = A_low
+        while True:
+            self.program_runner(A_start)
+
+            if len(self.out) == 17:
+                print(f"found end of 16 lengths outputs {A_start-1}")
+                break
+            else:
+                A_start += 1
+
+        return A_start - 1
+
+    def program_runner(self, A_start):
+        self.out = list()
+        self.pointer = 0
+        self.A = A_start
+        while self.pointer < len(self.program):
+            opcode = self.program[self.pointer]
+            operand = self.program[self.pointer + 1]
+
+            if opcode == 0:
+                self.opcode_0(operand)
+            elif opcode == 1:
+                self.opcode_1(operand)
+            elif opcode == 2:
+                self.opcode_2(operand)
+            elif opcode == 3:
+                self.opcode_3(operand)
+            elif opcode == 4:
+                self.opcode_4()
+            elif opcode == 5:
+                self.opcode_5(operand)
+            elif opcode == 6:
+                self.opcode_6(operand)
+            elif opcode == 7:
+                self.opcode_7(operand)
 
     def plot(self, A, outs):
         # size = [len(o) for o in outs]
