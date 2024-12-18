@@ -95,7 +95,8 @@
     },
     "cSpell.words": [
         "Adventofcode",
-        "myfile"
+        "myfile",
+        "networkx"
     ],
     "editor.formatOnSave": true
 }
