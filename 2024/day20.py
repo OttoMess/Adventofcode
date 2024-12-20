@@ -1,20 +1,17 @@
 import time
 import networkx as nx
 from matplotlib import pyplot as plt
-from collections import Counter
-import itertools
 
 EXAMPLE = "AoC_inputs/2024/day_20_example.txt"
 INPUT = "AoC_inputs/2024/day_20.txt"
 
 
 class Puzzle20:
-    def __init__(self, path, depth):
+    def __init__(self, path, time_part1: int, time_part2: int):
         start_time = time.time()
-
         self.file_path = path
-        self.depth = depth
-
+        self.time_part1 = time_part1
+        self.time_part2 = time_part2
         print(self.file_path)
         self.read_txt()
 
@@ -56,7 +53,7 @@ class Puzzle20:
                 b = self.ref.index(prev)
                 time_saved = abs(a - b) - 2  # for steps taken in shortcut
 
-                if time_saved >= 100:
+                if time_saved >= self.time_part1:
                     cheat_times.append(time_saved)
 
         return len(cheat_times)
@@ -64,18 +61,18 @@ class Puzzle20:
     def part2(self):
         cheat_times = list()
         lookup = set(self.ref)
-        t = 0
+        options = 0
         for step in self.ref:
-            t = self.test_20_cheat(step, lookup, self.depth)
+            options = self.test_20_cheat(step, lookup)
             a = self.ref.index(step)
-            for r, cheats in t:
-                b = self.ref.index(r)
-                time_saved = abs(a - b) - cheats
-                if time_saved >= 100:
+            for end, cheat_time in options:
+                b = self.ref.index(end)
+                #  compensate for time taken to walk cheat
+                time_saved = abs(a - b) - cheat_time
+                if time_saved >= self.time_part2:
                     cheat_times.append(time_saved)
 
-        print(Counter(cheat_times))
-        return len(cheat_times) // 2  # not sure why divide 2 is needed....
+        return len(cheat_times) // 2  # not sure why divide 2 is needed..... ?
 
     @staticmethod
     def one_wall_short_cut(path, wall):
@@ -94,10 +91,7 @@ class Puzzle20:
 
         return False, None, None
 
-    def large_short_cut(self):
-        return
-
-    def plot_nodes(self):
+    def plot_nodes(self):  # for visual purposes and debugging only
         plt.figure(figsize=(6, 6))
         pos = {(x, y): (y, -x) for x, y in self.grid.nodes()}
         nx.draw(
@@ -109,11 +103,11 @@ class Puzzle20:
         )
         plt.show()
 
-    def test_20_cheat(point, path, depth):
+    def test_20_cheat(self, point, path):
         collect = list()
-        for i in range(-depth, depth + 1):
+        for i in range(-20, 21):
             y = point[0] + i
-            e = depth - abs(i)
+            e = 20 - abs(i)
             for j in range(-e, e + 1):
                 x = point[1] + j
                 cheats = abs(i) + abs(j)
@@ -123,5 +117,5 @@ class Puzzle20:
         return collect
 
 
-Puzzle20(EXAMPLE)
-Puzzle20(INPUT)
+Puzzle20(EXAMPLE, time_part1=0, time_part2=50)
+Puzzle20(INPUT, time_part1=100, time_part2=100)
