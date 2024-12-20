@@ -62,9 +62,9 @@ class Puzzle18:
 
     def clean_memory(self):  # only for visual purposes
         self.memory = list()
-        for y in range(self.map_size):
+        for _ in range(self.map_size):
             self.memory.append("".join(["." for i in range(self.map_size)]))
 
 
-Puzzle18(EXAMPLE, 7, 12)
+Puzzle18(EXAMPLE, size_map=7, amount=12)
 Puzzle18(INPUT, 71, 1024)
