@@ -2,17 +2,18 @@ import time
 import networkx as nx
 from matplotlib import pyplot as plt
 from collections import Counter
+import itertools
 
 EXAMPLE = "AoC_inputs/2024/day_20_example.txt"
 INPUT = "AoC_inputs/2024/day_20.txt"
 
 
 class Puzzle20:
-    def __init__(self, path):
+    def __init__(self, path, depth):
         start_time = time.time()
 
         self.file_path = path
-        self.input = list()
+        self.depth = depth
 
         print(self.file_path)
         self.read_txt()
@@ -41,17 +42,18 @@ class Puzzle20:
             self.grid.remove_node(wall)
             if 0 < wall[0] < depth and 0 < wall[1] < width:
                 self.inner_walls.append(wall)
+        # only 1 shortest path, all nodes are in the shortest path
+        self.ref = nx.shortest_path(self.grid, self.start, self.end)
         return
 
     def part1(self):
-        ref = nx.shortest_path(self.grid, self.start, self.end)  # only 1 shortest path
         cheat_times = list()
-        lookup = set(ref)
+        lookup = set(self.ref)
         for wall in self.inner_walls:
-            possible, next, prev = self.short_cut_possible(lookup, wall)
+            possible, next, prev = self.one_wall_short_cut(lookup, wall)
             if possible:
-                a = ref.index(next)
-                b = ref.index(prev)
+                a = self.ref.index(next)
+                b = self.ref.index(prev)
                 time_saved = abs(a - b) - 2  # for steps taken in shortcut
 
                 if time_saved >= 100:
@@ -60,10 +62,23 @@ class Puzzle20:
         return len(cheat_times)
 
     def part2(self):
-        return
+        cheat_times = list()
+        lookup = set(self.ref)
+        t = 0
+        for step in self.ref:
+            t = self.test_20_cheat(step, lookup, self.depth)
+            a = self.ref.index(step)
+            for r, cheats in t:
+                b = self.ref.index(r)
+                time_saved = abs(a - b) - cheats
+                if time_saved >= 100:
+                    cheat_times.append(time_saved)
+
+        print(Counter(cheat_times))
+        return len(cheat_times) // 2  # not sure why divide 2 is needed....
 
     @staticmethod
-    def short_cut_possible(path, wall):
+    def one_wall_short_cut(path, wall):
         y = wall[0]
         x = wall[1]
 
@@ -79,6 +94,9 @@ class Puzzle20:
 
         return False, None, None
 
+    def large_short_cut(self):
+        return
+
     def plot_nodes(self):
         plt.figure(figsize=(6, 6))
         pos = {(x, y): (y, -x) for x, y in self.grid.nodes()}
@@ -91,6 +109,19 @@ class Puzzle20:
         )
         plt.show()
 
+    def test_20_cheat(point, path, depth):
+        collect = list()
+        for i in range(-depth, depth + 1):
+            y = point[0] + i
+            e = depth - abs(i)
+            for j in range(-e, e + 1):
+                x = point[1] + j
+                cheats = abs(i) + abs(j)
+                node = (y, x)
+                if node in path:
+                    collect.append((node, cheats))
+        return collect
 
-# Puzzle20(EXAMPLE)
+
+Puzzle20(EXAMPLE)
 Puzzle20(INPUT)
