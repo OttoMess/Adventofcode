@@ -67,12 +67,12 @@ class Puzzle20:
             a = self.ref.index(step)
             for end, cheat_time in options:
                 b = self.ref.index(end)
-                #  compensate for time taken to walk cheat
-                time_saved = abs(a - b) - cheat_time
+                #  compensate for time taken for cheat
+                time_saved = b - a - cheat_time
                 if time_saved >= self.time_part2:
                     cheat_times.append(time_saved)
 
-        return len(cheat_times) // 2  # not sure why divide 2 is needed..... ?
+        return len(cheat_times)
 
     @staticmethod
     def one_wall_short_cut(path, wall):
