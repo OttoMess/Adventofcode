@@ -64,8 +64,8 @@ class Puzzle17:
             return A
         for i in range(8):
             output = self.program_runner(self.program, A * 8 + i)
-            if output and output[0] == self.target[depth]:
-                # if depth not reached with tried i return none
+            if output[0] == self.target[depth]:
+                # if depth not reached with tried i return false
                 result = self.find_A((A * 8 + i), depth + 1)
                 if result:
                     return result
