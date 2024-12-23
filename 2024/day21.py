@@ -1,6 +1,8 @@
 import time
 import networkx as nx
 from matplotlib import pyplot as plt
+from functools import cache
+
 
 EXAMPLE = "AoC_inputs/2024/day_21_example.txt"
 INPUT = "AoC_inputs/2024/day_21.txt"
@@ -28,6 +30,10 @@ Start on A
 | < | v | > |
 +---+---+---+
 
+part 2
+97227250560186 to low
+107258143797068 to low
+112698726110005 wrong
 """
 
 
@@ -36,7 +42,6 @@ class Puzzle21:
         start_time = time.time()
 
         self.file_path = path
-        self.input = list()
 
         print(self.file_path)
         self.read_txt()
@@ -54,8 +59,8 @@ class Puzzle21:
 
     def part1(self):
         num, dirs = self.build_grids()
-        # self.plot_nodes(num)
-        # self.plot_nodes(dirs)
+        # self.plot_nodes(num) # for visuals of the nx grids
+        # self.plot_nodes(dirs) # for visuals of the nx grids
         collector = 0
         for line in self.input:
             arm = "A"
@@ -91,54 +96,89 @@ class Puzzle21:
                     key_1_arm = dir_1
 
                 arm = number
-            print(f"{line}: {"".join([i for i in output_2])}")
+            # print(f"{line}: {"".join([i for i in output_2])}")
             collector += len(output_2) * int(line[:-1])
         return collector
 
     def part2(self):
-        num, dirs = self.build_grids()
+        num, self.dirs = self.build_grids()
+        self.depth = 25
+        self.lookup_set()
         # self.plot_nodes(num)
         # self.plot_nodes(dirs)
         collector = 0
+        collector_1 = 0
+        count = 0
+        # find length of operations for each of the 5 options
+        options = "<>^vA"
+        book = dict()
+        for o in options:
+            book[o] = self.directional_pad(o, 1, "A")
         for line in self.input:
             arm = "A"
-            key_1_arm = "A"
-            key_2_arm = "A"
-            output_1 = list()
-            output_2 = list()
-            output_num = list()
+            self.out = list()
+            self.length = 0
+            count = 0
             for number in line:
                 pos_num = nx.shortest_path(num, self.numeric(arm), self.numeric(number))
                 num_steps = self.path_to_steps(pos_num, self.num_nodes)
+
                 for step in num_steps:
-                    output_num.append(step)
-                """
-                this must be 25 layer deep
-                s
-                for dir_1 in num_steps:
-                    pos_key_1 = nx.shortest_path(
-                        dirs, self.directional(key_1_arm), self.directional(dir_1)
-                    )
-                    key_1 = self.path_to_steps(pos_key_1, self.dirs_nodes)
-                    for step in key_1:
-                        output_1.append(step)
+                    self.length += book[step]
 
-                    for dir_2 in key_1:
-                        pos_key_2 = nx.shortest_path(
-                            dirs, self.directional(key_2_arm), self.directional(dir_2)
-                        )
-                        key_2 = self.path_to_steps(pos_key_2, self.dirs_nodes)
-                        for step in key_2:
-                            output_2.append(step)
+                count += self.directional_pad(num_steps, 1, "A")
 
-                        key_2_arm = dir_2
-
-                    key_1_arm = dir_1
-                """
                 arm = number
-            print(f"{line}: {"".join([i for i in output_2])}")
-            collector += len(output_2) * int(line[:-1])
+            # print(f"{line}: {"".join([i for i in self.out])}")
+            # print(line)
+            collector_1 += self.length * int(line[:-1])
+            collector += count * int(line[:-1])
         return collector
+
+    def lookup_set(self):
+        self.lookup = {
+            "A<": "v<<A",
+            "A^": "<A",
+            "A>": "vA",
+            "Av": "v<A",
+            "<>": ">>A",
+            "<^": ">^A",
+            "<v": ">A",
+            "<A": ">>^A",
+            "><": "<<A",
+            ">A": "^A",
+            ">v": "<A",
+            ">^": "<^A",
+            "^A": ">A",
+            "^>": "v>A",
+            "^<": "v<A",
+            "^v": "vA",
+            "v<": "<A",
+            "v>": ">A",
+            "v^": "^A",
+            "vA": ">^A",
+        }
+        return self.lookup
+
+    @cache
+    def directional_pad(self, path, depth, position):
+        if depth == self.depth:
+            # for step in path:
+            #     self.out.append(step)
+            # self.length += len(path)
+            return len(path)
+
+        total = 0
+        for step in path:
+            if step == position:
+                sub_path = "A"
+            else:
+                check = position + step
+                sub_path = self.lookup[check]
+            length = self.directional_pad(sub_path, depth + 1, "A")
+            total += length
+            position = step
+        return total
 
     def build_grids(self):
         num = nx.grid_2d_graph(4, 3)
@@ -179,18 +219,18 @@ class Puzzle21:
                         break
                 steps = two
 
-        directions = list()
+        directions = str()
         for e in steps:
             match e:
                 case (0, 1):
-                    directions.append("<")
+                    directions += "<"
                 case (0, -1):
-                    directions.append(">")
+                    directions += ">"
                 case (1, 0):
-                    directions.append("^")
+                    directions += "^"
                 case (-1, 0):
-                    directions.append("v")
-        directions.append("A")  # need to press button
+                    directions += "v"
+        directions += "A"  # need to press button
         return directions
 
     @staticmethod
@@ -245,6 +285,55 @@ class Puzzle21:
             node_size=600,
         )
         plt.show()
+
+
+def lookup_set():
+    lookup = {
+        "A<": "v<<A",
+        "A^": "<A",
+        "A>": "vA",
+        "Av": "v<A",
+        "<>": ">>A",
+        "<^": ">^A",
+        "<v": ">A",
+        "<A": ">>^A",
+        "><": "<<A",
+        ">A": "^A",
+        ">v": "<A",
+        ">^": "<^A",
+        "^A": ">A",
+        "^>": "v>A",
+        "^<": "v<A",
+        "^v": "vA",
+        "v<": "<A",
+        "v>": ">A",
+        "v^": "^A",
+        "vA": ">^A",
+    }
+    return lookup
+
+
+@cache
+def directional_pad(path, depth, position, target=25):
+    lookup = lookup_set()
+
+    if depth == target:
+        # for step in path:
+        #     self.out.append(step)
+        # self.length += len(path)
+        return len(path)
+
+    total = 0
+    for step in path:
+        if step == position:
+            sub_path = "A"
+        else:
+            check = position + step
+            sub_path = lookup[check]
+        length = directional_pad(sub_path, depth + 1, "A")
+        total += length
+        position = step
+    return total
 
 
 Puzzle21(EXAMPLE)
