@@ -1,6 +1,7 @@
 import time
 from matplotlib import pyplot as plt
 import numpy as np
+from functools import cache
 
 TEST = "AoC_inputs/2024/day_17_test.txt"
 EXAMPLE = "AoC_inputs/2024/day_17_example.txt"
@@ -32,7 +33,7 @@ class Puzzle17:
                     self.C = int(line.strip().split(":")[1])
                 elif "Program:" in line:
                     temp = line.strip().split(":")
-                    self.program = [int(i) for i in temp[1].split(",")]
+                    self.program = tuple([int(i) for i in temp[1].split(",")])
 
     def part1(self):
         out = self.program_runner(self.program, self.A)
@@ -51,10 +52,27 @@ class Puzzle17:
         out=B%5     5,5
         restart     3,0
         """
-        e = self.program_runner(self.program, self.A)
-        return
+        self.length = len(self.program)
+        self.target = self.program[::-1]
+
+        A = self.find_A()
+
+        return A
+
+    def find_A(self, A=0, depth=0):
+        if depth == self.length:
+            return A
+        for i in range(8):
+            output = self.program_runner(self.program, A * 8 + i)
+            if output and output[0] == self.target[depth]:
+                # if depth not reached with tried i return none
+                result = self.find_A((A * 8 + i), depth + 1)
+                if result:
+                    return result
+        return False
 
     @staticmethod
+    @cache
     def program_runner(program, a):
         out = list()
         pointer = 0
@@ -88,29 +106,6 @@ class Puzzle17:
         return out
 
 
-# from re import findall
-
-# a, b, c, *prog = [
-#     int(n) for n in findall("(\d+)", open("AoC_inputs/2024/day_17.txt").read())
-# ]
-
-
-# print("Part 1:", ",".join(str(n) for n in run(prog, a)))
-
-# target = prog[::-1]
-
-
-# def find_a(a=0, depth=0):
-#     if depth == len(target):
-#         return a
-#     for i in range(8):
-#         output = run(prog, a * 8 + i)
-#         if output and output[0] == target[depth]:
-#             if result := find_a((a * 8 + i), depth + 1):
-#                 return result
-#     return 0
-
-
-# Puzzle17(TEST)
-# Puzzle17(EXAMPLE)
+Puzzle17(TEST)
+Puzzle17(EXAMPLE)
 Puzzle17(INPUT)
