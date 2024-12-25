@@ -53,6 +53,7 @@ class Puzzle22:
             for i in range(len(cha) - 4):
                 window = tuple(cha[i : i + 4])
                 if window not in seen:
+                    # tripped over [1:4] does not include element in idex 4 while [4] calls idex 4 directly.
                     value[window] += number_bananas[j][i + 4]
                     seen.add(window)
 
