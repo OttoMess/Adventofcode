@@ -67,7 +67,7 @@ class Puzzle10:
             while len(queue) > 0:
                 loc = heappop(queue)
                 map_view = self.update_map(map_view, loc[1])  # for vitalization only
-                priority += 1  # TODO might work find without any priority
+                priority += 1  
                 visited.add(loc[1])
 
                 if self.input[loc[1][0]][loc[1][1]] == "9":
