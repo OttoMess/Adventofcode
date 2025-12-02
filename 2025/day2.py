@@ -48,29 +48,26 @@ class Puzzle2:
         digits = int(math.log10(id))+1
 
         # finding the number of section possible for input
-        sections = []
-        for i in range(2, digits+1):
-            if digits % i == 0:
-                sections.append(i)
+        sections = [n for n in range(2, digits+1) if digits % n == 0]
 
         # looping of the section options
         for section in sections:
             window = int(digits / section)
-            parts = []
+            parts = set()  # from list to set improves time from 3.1 sec to 2.6 sec
             a = 0
             dut = str(id)
 
             # cutting the string in the equal sections
             for _ in range(section):
                 part = dut[a: a+window]
-                parts.append(part)
+                parts.add(part)
                 a += window
 
                 # attempt to make code bit faster. from ~3.5 sec to ~3.1sec
-                if len(parts) >= 2 and len(set(parts)) > 1:
+                if len(parts) >= 2 and len(parts) > 1:
                     break
 
-            if len(set(parts)) == 1:
+            if len(parts) == 1:
                 return id
 
         return 0
