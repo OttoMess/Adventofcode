@@ -24,20 +24,23 @@ class Puzzle1:
         with open(self.file_path) as file:
             for line in file:
                 raw = line.strip()
-                data.append([raw[0], int(raw[1:])])
+                data.append((raw[0], int(raw[1:])))
         self.input = data
 
     def part1(self):
         dial = 50
         counter = 0
+        
         for turn in self.input:
             match turn[0]:
                 case "L":
                     dial = (dial - turn[1]) % 100
                 case "R":
                     dial = (dial + turn[1]) % 100
+            
             if dial == 0:
                 counter += 1
+
         return counter
 
     def part2(self):
@@ -45,7 +48,6 @@ class Puzzle1:
         counter = 0
 
         for turn in self.input:
-
             match turn[0]:
                 case "L":
                     for i in range(turn[1]):
