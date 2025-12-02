@@ -30,7 +30,8 @@ class Puzzle2:
                     data.append([int(j) for j in i.split("-")])
         self.input = data
 
-    def check_for_doubles(self, id):
+    @staticmethod
+    def check_for_doubles(id):
         digits = int(math.log10(id))+1
 
         if digits % 2 == 0:
@@ -38,7 +39,6 @@ class Puzzle2:
             right = id % power
             left = id//power
             if left == right:
-                print(id)
                 return id
 
         return 0
@@ -47,7 +47,6 @@ class Puzzle2:
         collector = 0
         for j in self.input:
             ids = range(j[0], j[1]+1)
-            # print(ids)
             for i in ids:
                 collector += self.check_for_doubles(i)
 
