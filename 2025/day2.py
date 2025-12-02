@@ -43,7 +43,34 @@ class Puzzle2:
 
         return 0
 
+    @staticmethod
+    def check_for_multiple(id):
+        digits = int(math.log10(id))+1
+
+        if digits % 2 == 0:
+            power = int(10**(digits/2))
+            right = id % power
+            left = id//power
+            if left == right:
+                return id
+
+        elif digits % 3 == 0:
+            power = int(10**(digits/3))
+            a = id % power
+            b = id//power
+
+        return 0
+
     def part1(self):
+        collector = 0
+        for j in self.input:
+            ids = range(j[0], j[1]+1)
+            for i in ids:
+                collector += self.check_for_multiple(i)
+
+        return collector
+
+    def part2(self):
         collector = 0
         for j in self.input:
             ids = range(j[0], j[1]+1)
@@ -51,8 +78,6 @@ class Puzzle2:
                 collector += self.check_for_doubles(i)
 
         return collector
-
-    def part2(self):
         return
 
 
