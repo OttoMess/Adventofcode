@@ -47,17 +47,31 @@ class Puzzle2:
     def check_for_multiple(id):
         digits = int(math.log10(id))+1
 
-        if digits % 2 == 0:
-            power = int(10**(digits/2))
-            right = id % power
-            left = id//power
-            if left == right:
-                return id
+        # finding the number of section possible for input
+        sections = []
+        for i in range(2, digits+1):
+            if digits % i == 0:
+                sections.append(i)
 
-        elif digits % 3 == 0:
-            power = int(10**(digits/3))
-            a = id % power
-            b = id//power
+        # looping of the section options
+        for section in sections:
+            window = int(digits / section)
+            parts = []
+            a = 0
+            dut = str(id)
+
+            # cutting the string in the equal sections
+            for _ in range(section):
+                part = dut[a: a+window]
+                parts.append(part)
+                a += window
+
+                # attempt to make code bit faster. from ~3.5 sec to ~3.1sec
+                if len(parts) >= 2 and len(set(parts)) > 1:
+                    break
+
+            if len(set(parts)) == 1:
+                return id
 
         return 0
 
@@ -66,7 +80,7 @@ class Puzzle2:
         for j in self.input:
             ids = range(j[0], j[1]+1)
             for i in ids:
-                collector += self.check_for_multiple(i)
+                collector += self.check_for_doubles(i)
 
         return collector
 
@@ -75,10 +89,9 @@ class Puzzle2:
         for j in self.input:
             ids = range(j[0], j[1]+1)
             for i in ids:
-                collector += self.check_for_doubles(i)
+                collector += self.check_for_multiple(i)
 
         return collector
-        return
 
 
 Puzzle2(EXAMPLE)
