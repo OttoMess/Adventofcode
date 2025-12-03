@@ -50,7 +50,7 @@ class Puzzle3:
 
     @staticmethod
     def list_to_joltage(data):
-        joltage = sum([j[0]*10**(len(data)-1 - i) for i, j in enumerate(data)])
+        joltage = sum([j*10**(len(data)-1 - i) for i, j in enumerate(data)])
         return joltage
 
     @staticmethod
@@ -67,46 +67,38 @@ class Puzzle3:
 
     def recursive_tree_search(self, bank, start, depth):
         if depth == self.n_bat:
-            return self.volt
-        # possible option to use append and pop. not store value but list
+            return
+        elif depth == 0:
+            self.battery = list()
+
         end = len(bank)-self.n_bat+depth
         value, locations = self.search_best_option(bank, start, end)
-        col_list = list()
+
+        self.battery.append(value)
         for loc in locations:
-            v = value * 10**(self.n_bat-1-depth)
-            self.volt += v
-            volts = self.recursive_tree_search(bank, loc+1, depth+1)
-            if depth == 0:
-                col_list.append(volts)
-                self.volt = 0
+            self.recursive_tree_search(bank, loc+1, depth+1)
 
         if depth == 0:
-            return col_list
+            return
         else:
-            return volts
+            if len(self.battery) == 12:
+                self.options.add(self.list_to_joltage(self.battery))
+            self.battery.pop(-1)
+            return
 
     def part2(self):
         collector = 0
         self.n_bat = 12
 
-        positions = [i for i in range(self.n_bat)]
-        joltage = list()
         for bank in self.input:
-            """ #TODO make system to build list with value en position in the battery bank
-             [9 (joltage), 3 (location of battery in bank)] 
-             location is used, can only add battery's after selected battery"""
 
-            # start joltage for first set of battery's in the bank
-            start = [[bank[i], i] for i in positions]
-            self.volt = 0
-            w = self.recursive_tree_search(bank, start=0, depth=0)
-            print(w)
-            collector += max(w)
+            self.options = set()
+            self.recursive_tree_search(bank, start=0, depth=0)
+            # print(self.options)
+            collector += max(self.options)
 
         return collector
 
 
 Puzzle3(EXAMPLE)
-# Puzzle3(INPUT)
-
-# 232610322220956 to high for part 2
+Puzzle3(INPUT)
