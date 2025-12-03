@@ -54,17 +54,17 @@ class Puzzle2:
         for section in sections:
             window = int(digits / section)
             parts = set()  # from list to set improves time from 3.1 sec to 2.6 sec
-            a = 0
+            begin = 0
             dut = str(id)
 
             # cutting the string in the equal sections
             for _ in range(section):
-                part = dut[a: a+window]
+                part = dut[begin: begin+window]
                 parts.add(part)
-                a += window
+                begin += window
 
                 # attempt to make code bit faster. from ~3.5 sec to ~3.1sec
-                if len(parts) >= 2 and len(parts) > 1:
+                if len(parts) > 1:
                     break
 
             if len(parts) == 1:
