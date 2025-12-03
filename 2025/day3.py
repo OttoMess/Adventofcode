@@ -54,10 +54,10 @@ class Puzzle3:
         return joltage
 
     @staticmethod
-    def search(bank, start, end):
+    def search_best_option(bank, start, end):
         best = int()
         locations = [int()]
-        for i in range(start, end):
+        for i in range(start, end+1):  # include end location
             if bank[i] > best:
                 best = bank[i]
                 locations = [i]
@@ -65,11 +65,31 @@ class Puzzle3:
                 locations.append(i)
         return best, locations
 
+    def recursive_tree_search(self, bank, start, depth):
+        if depth == self.n_bat:
+            return self.volt
+        # possible option to use append and pop. not store value but list
+        end = len(bank)-self.n_bat+depth
+        value, locations = self.search_best_option(bank, start, end)
+        col_list = list()
+        for loc in locations:
+            v = value * 10**(self.n_bat-1-depth)
+            self.volt += v
+            volts = self.recursive_tree_search(bank, loc+1, depth+1)
+            if depth == 0:
+                col_list.append(volts)
+                self.volt = 0
+
+        if depth == 0:
+            return col_list
+        else:
+            return volts
+
     def part2(self):
         collector = 0
-        n_bat = 2
+        self.n_bat = 12
 
-        positions = [i for i in range(n_bat)]
+        positions = [i for i in range(self.n_bat)]
         joltage = list()
         for bank in self.input:
             """ #TODO make system to build list with value en position in the battery bank
@@ -78,15 +98,15 @@ class Puzzle3:
 
             # start joltage for first set of battery's in the bank
             start = [[bank[i], i] for i in positions]
-
-            for pos in positions:
-                start = pos
-                end = len(bank)+1-n_bat-pos
-                e, f = self.search(bank, start, end)
-                # find the best option for position 1. make list of them
+            self.volt = 0
+            w = self.recursive_tree_search(bank, start=0, depth=0)
+            print(w)
+            collector += max(w)
 
         return collector
 
 
 Puzzle3(EXAMPLE)
-Puzzle3(INPUT)
+# Puzzle3(INPUT)
+
+# 232610322220956 to high for part 2
