@@ -28,12 +28,9 @@ class Puzzle3:
         self.input = data
 
     def part1(self):
-        # 99 is max value
-
         collector = 0
+
         for bank in self.input:
-            left = int()
-            right = int()
             max_joltage = int()
 
             for i,left_bat in enumerate(bank):
@@ -53,7 +50,8 @@ class Puzzle3:
         return collector
 
     def part2(self):
-        return
+        collector = 0
+        return collector
 
 
 Puzzle3(EXAMPLE)
