@@ -4,6 +4,18 @@ import time
 EXAMPLE = "AoC_inputs/2025/day_4_example.txt"
 INPUT = "AoC_inputs/2025/day_4.txt"
 
+""" 
+mapping used for the coordinates
+     x -> row
+y      0 1 2
+|    0 . . . 
+V    1 . . .
+     2 . . .
+column     
+So get x,y point from data[y][x]
+input is [x,y]
+"""
+
 
 class Puzzle4:
     def __init__(self, path):
@@ -14,6 +26,8 @@ class Puzzle4:
 
         print(self.file_path)
         self.read_txt()
+
+        self.adjacent = ((1, 0), (-1, 0), (0, 1), (0, -1), (-1,-1),(1,1),(-1,1),(1,-1))
 
         print(f"output part one: {self.part1()}")
         print(f"output part two: {self.part2()}")
@@ -26,12 +40,37 @@ class Puzzle4:
                 data.append(line.strip())
         self.input = data
 
+    def check_adjacent(self, x, y):
+        free_spots = 0
+        for adjacent in self.adjacent:
+            check_x = x - adjacent[0]
+            check_y = y - adjacent[1]
+            if check_x <0  or check_y<0:
+                free_spots +=1
+            if check_x >=10  or check_y>=10:
+                free_spots +=1
+            elif self.input[check_y][check_x] == ".":
+                free_spots +=1
+            elif free_spots <= 4:
+                return True
+        return False
+
     def part1(self):
-        return
+        counter = 0
+        for y,row in enumerate(self.input):
+            for x, slot in enumerate(row):
+                if slot == ".":
+                    continue
+                else:
+                    movable = self.check_adjacent(x,y)
+                    if movable:
+                        print (x,y)
+                        counter += 1
+        return counter
 
     def part2(self):
         return
 
 
 Puzzle4(EXAMPLE)
-Puzzle4(INPUT)
+# Puzzle4(INPUT)
