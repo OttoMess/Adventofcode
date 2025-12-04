@@ -71,12 +71,31 @@ class Puzzle4:
                 else:
                     movable = self.check_adjacent(x, y)
                     if movable:
-                        print(x, y)
                         counter += 1
         return counter
 
     def part2(self):
-        return
+        counter = 0
+        
+        while True:
+            removed = list()
+            for y, row in enumerate(self.input):
+                for x, slot in enumerate(row):
+                    if slot == "." or slot =="x":
+                        continue
+                    else:
+                        movable = self.check_adjacent(x, y)
+                        if movable:
+                            removed.append([x,y])
+                            counter += 1
+
+            for x,y in removed:
+                self.input[y] = self.input[y] [:x] + "x" + self.input[y] [x+1:]
+
+            if len(removed) == 0:
+                break
+
+        return counter
 
 
 Puzzle4(EXAMPLE)
