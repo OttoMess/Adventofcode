@@ -27,7 +27,8 @@ class Puzzle4:
         print(self.file_path)
         self.read_txt()
 
-        self.adjacent = ((1, 0), (-1, 0), (0, 1), (0, -1), (-1,-1),(1,1),(-1,1),(1,-1))
+        self.adjacent = ((1, 0), (-1, 0), (0, 1), (0, -1),
+                         (-1, -1), (1, 1), (-1, 1), (1, -1))
 
         print(f"output part one: {self.part1()}")
         print(f"output part two: {self.part2()}")
@@ -41,30 +42,33 @@ class Puzzle4:
         self.input = data
 
     def check_adjacent(self, x, y):
-        free_spots = 0
+        paper = 0
         for adjacent in self.adjacent:
             check_x = x - adjacent[0]
             check_y = y - adjacent[1]
-            if check_x <0  or check_y<0:
-                free_spots +=1
-            if check_x >=10  or check_y>=10:
-                free_spots +=1
-            elif self.input[check_y][check_x] == ".":
-                free_spots +=1
-            elif free_spots >= 4:
-                return True
-        return False
+
+            if check_x < 0 or check_y < 0:
+                continue
+            if check_x >= 10 or check_y >= 10:
+                continue
+            elif self.input[check_y][check_x] == "@":
+                paper += 1
+
+        if paper < 4:
+            return False
+
+        return True
 
     def part1(self):
         counter = 0
-        for y,row in enumerate(self.input):
+        for y, row in enumerate(self.input):
             for x, slot in enumerate(row):
                 if slot == ".":
                     continue
                 else:
-                    movable = self.check_adjacent(x,y)
+                    movable = self.check_adjacent(x, y)
                     if movable:
-                        print (x,y)
+                        print(x, y)
                         counter += 1
         return counter
 
