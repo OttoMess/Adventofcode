@@ -51,7 +51,7 @@ class Puzzle4:
                 free_spots +=1
             elif self.input[check_y][check_x] == ".":
                 free_spots +=1
-            elif free_spots <= 4:
+            elif free_spots >= 4:
                 return True
         return False
 
