@@ -39,25 +39,28 @@ class Puzzle4:
         with open(self.file_path) as file:
             for line in file:
                 data.append(line.strip())
+                self.size_x = len(line)
+        self.size_y = len(data) # data input is same row and column count
         self.input = data
 
     def check_adjacent(self, x, y):
         paper = 0
+
         for adjacent in self.adjacent:
             check_x = x - adjacent[0]
             check_y = y - adjacent[1]
 
             if check_x < 0 or check_y < 0:
                 continue
-            if check_x >= 10 or check_y >= 10:
+            if check_x >= self.size_x or check_y >= self.size_y:
                 continue
             elif self.input[check_y][check_x] == "@":
                 paper += 1
 
         if paper < 4:
-            return False
+            return True
 
-        return True
+        return False
 
     def part1(self):
         counter = 0
@@ -77,4 +80,7 @@ class Puzzle4:
 
 
 Puzzle4(EXAMPLE)
-# Puzzle4(INPUT)
+Puzzle4(INPUT)
+
+# 11983 to high
+# 11273 to high
