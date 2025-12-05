@@ -1,5 +1,4 @@
 import time
-import intervaltree
 
 EXAMPLE = "AoC_inputs/2025/day_5_example.txt"
 INPUT = "AoC_inputs/2025/day_5.txt"
@@ -48,28 +47,23 @@ class Puzzle5:
         return counter
 
     def part2(self):
-
         # sorting the ranges was the key to make is simple
         intervals = list(sorted(self.fresh))
 
-        residue = list()
-        residue.append(list(intervals[0]))
-
+        section = list(intervals[0])
+        counter = 0
         for i in range(1, len(intervals)):
-            last = residue[-1]
-            curr = intervals[i]
+            current = intervals[i]
 
             # If current interval overlaps with the last merged
             # interval, merge them
-            if curr[0] <= last[1]:
-                last[1] = max(last[1], curr[1])
+            if current[0] <= section[1]:
+                section[1] = max(section[1], current[1])
             else:
-                residue.append(list(curr))
+                counter += section[1] - section[0] + 1
+                section = list(current)
 
-        counter = 0
-        for begin, end in residue:
-            counter += end - begin + 1
-
+        counter += section[1] - section[0] + 1  # add last section
         return counter
 
 
