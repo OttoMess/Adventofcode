@@ -48,19 +48,12 @@ class Puzzle5:
         return counter
 
     def part2(self):
-        condensed = list()
-        full_range = list()
-        loop = 0
-        # ranger = list()
-        intervals = list()
-        # tree = intervaltree.IntervalTree()
-        for begin, end in self.fresh:
-            # ranger.append(range(begin, end))
-            intervals.append([begin, end])
 
-        intervals.sort()
+        # sorting the ranges was the key to make is simple
+        intervals = list(sorted(self.fresh))
+
         residue = list()
-        residue.append(intervals[0])
+        residue.append(list(intervals[0]))
 
         for i in range(1, len(intervals)):
             last = residue[-1]
@@ -71,40 +64,13 @@ class Puzzle5:
             if curr[0] <= last[1]:
                 last[1] = max(last[1], curr[1])
             else:
-                residue.append(curr)
+                residue.append(list(curr))
 
-        #     if begin != end:
-        #         tree[begin: end] = (begin, end)
-        #         # tree = it.IntervalTree.from_tuples(self.fresh)
-        # tree.merge_overlaps(strict=False)
-        # for begin, end in self.fresh:
-        #     if loop == 0:
-        #         condensed.append([begin, end, True])
-        #         full_range = [begin, end]
-        #     else:
-        #         if begin > full_range[1]:  # expand range positive side
-        #             condensed.append([full_range[1]+1, begin-1, False])
-        #             full_range[1] = end
-        #             condensed.append([begin, end, True])
+        counter = 0
+        for begin, end in residue:
+            counter += end - begin + 1
 
-        #         elif end < full_range[0]:  # expand range negative  side
-        #             condensed.append([end, full_range[0]-1, False])
-        #             full_range[0] = begin
-        #             condensed.append([begin, end, True])
-
-        #         elif full_range[0] >= begin and end <= full_range[1]:
-        #             q = 1
-
-        # # fit in range already
-        # if a<=begin <=b and a<=end <=b:
-        #     continue
-        # elif a<begin:
-        #     condensed.append([end+1])
-        #     condensed.append([begin,end,True])
-
-        loop += 1
-        # fresh_set.update(range(start, end+1)) #BUG will not work, way to big
-        return
+        return counter
 
 
 Puzzle5(EXAMPLE)
