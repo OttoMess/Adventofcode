@@ -56,18 +56,41 @@ class Puzzle6:
         return collector
 
     def part2(self) -> int:
-        stringer = []
-        for k in range(len(self.input)):
-            i = 0
-            q = []
-            # BUG not all numbers are 3 digits long can not use fixed window
-            # possible use the location of the operators signs
-            while i < len(self.input[k]) - 3:
-                section = self.input[k][i:i+3]
-                q.append(section)
-                i += 4
-            stringer.append(q)
-        return 0
+        collector = 0
+
+        ope_loc = [(p, i) for i, p in enumerate(self.input[-1]) if p != " "]
+
+        for pos in range(len(ope_loc)):
+            values = []
+            begin = ope_loc[pos][1]
+
+            if pos == len(ope_loc)-1:
+                end = len(self.input[0])
+            else:
+                end = ope_loc[pos+1][1]-1
+
+            for j in range(begin, end):
+                v = ""
+                for i in range(len(self.input)-1):
+                    v += str(self.input[i][j])
+
+                try:
+                    values.append(int(v))
+                except:
+                    continue
+
+            match ope_loc[pos][0]:
+                case "+":
+                    for v in values:
+                        collector += v
+
+                case "*":
+                    mul = values[0]
+                    for i in range(1, len(values)):
+                        mul *= values[i]
+                    collector += mul
+
+        return collector
 
 
 Puzzle6(EXAMPLE)
