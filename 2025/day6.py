@@ -23,21 +23,26 @@ class Puzzle6:
         data = list()
         with open(self.file_path) as file:
             for line in file:
-                data.append(line.strip().split())
+                data.append(line)
         self.input = data
 
     def part1(self) -> int:
         operator = str()
         collector = 0
-        for column in range(len(self.input[0])):
+
+        cut = []
+        for line in self.input:
+            cut.append(line.strip().split())
+
+        for column in range(len(cut[0])):
             values = []
-            for row in range(len(self.input)):
-                a = self.input[row][column]
+            for row in range(len(cut)):
+                a = cut[row][column]
                 try:
                     values.append(int(a))
-
                 except:
                     operator = a
+
             match operator:
                 case "+":
                     for v in values:
@@ -48,10 +53,20 @@ class Puzzle6:
                     for i in range(1, len(values)):
                         mul *= values[i]
                     collector += mul
-
         return collector
 
     def part2(self) -> int:
+        stringer = []
+        for k in range(len(self.input)):
+            i = 0
+            q = []
+            # BUG not all numbers are 3 digits long can not use fixed window
+            # possible use the location of the operators signs
+            while i < len(self.input[k]) - 3:
+                section = self.input[k][i:i+3]
+                q.append(section)
+                i += 4
+            stringer.append(q)
         return 0
 
 
