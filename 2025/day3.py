@@ -5,7 +5,7 @@ INPUT = "AoC_inputs/2025/day_3.txt"
 
 
 class Puzzle3:
-    def __init__(self, path):
+    def __init__(self, path) -> None:
         start_time = time.time()
 
         self.file_path = path
@@ -18,7 +18,7 @@ class Puzzle3:
         print(f"output part two: {self.part2()}")
         print(f"Run time {round(time.time() - start_time, 4)} [sec]\n")
 
-    def read_txt(self):
+    def read_txt(self) -> None:
         data = list()
         with open(self.file_path) as file:
             for line in file:
@@ -26,7 +26,7 @@ class Puzzle3:
                 data.append(lose)
         self.input = data
 
-    def part1(self):
+    def part1(self) -> int:
         collector = 0
 
         for bank in self.input:
@@ -49,14 +49,14 @@ class Puzzle3:
         return collector
 
     @staticmethod
-    def list_to_joltage(data):
+    def list_to_joltage(data) -> int:
         joltage = sum([j*10**(len(data)-1 - i) for i, j in enumerate(data)])
         return joltage
 
     @staticmethod
-    def search_best_option(bank, start, end):
+    def search_best_option(bank, start, end) -> tuple[int, list]:
         best = int()
-        locations = [int()]
+        locations = []
         for i in range(start, end+1):  # include end location
             if bank[i] > best:
                 best = bank[i]
@@ -65,7 +65,7 @@ class Puzzle3:
                 locations.append(i)
         return best, locations
 
-    def recursive_tree_search(self, bank, start, depth):
+    def recursive_tree_search(self, bank, start, depth) -> None:
         if depth == self.n_bat:
             return
         elif depth == 0:
@@ -86,7 +86,7 @@ class Puzzle3:
             self.battery.pop(-1)
             return
 
-    def part2(self):
+    def part2(self) -> int:
         collector = 0
         self.n_bat = 12
 

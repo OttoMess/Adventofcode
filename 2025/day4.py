@@ -40,7 +40,7 @@ class Puzzle4:
             for line in file:
                 data.append(line.strip())
                 self.size_x = len(line)
-        self.size_y = len(data) # data input is same row and column count
+        self.size_y = len(data)  # data input is same row and column count
         self.input = data
 
     def check_adjacent(self, x, y):
@@ -62,7 +62,7 @@ class Puzzle4:
 
         return False
 
-    def part1(self):
+    def part1(self) -> int:
         counter = 0
         for y, row in enumerate(self.input):
             for x, slot in enumerate(row):
@@ -74,23 +74,23 @@ class Puzzle4:
                         counter += 1
         return counter
 
-    def part2(self):
+    def part2(self) -> int:
         counter = 0
-        
+
         while True:
             removed = list()
             for y, row in enumerate(self.input):
                 for x, slot in enumerate(row):
-                    if slot == "." or slot =="x":
+                    if slot == "." or slot == "x":
                         continue
                     else:
                         movable = self.check_adjacent(x, y)
                         if movable:
-                            removed.append([x,y])
+                            removed.append([x, y])
                             counter += 1
 
-            for x,y in removed:
-                self.input[y] = self.input[y] [:x] + "x" + self.input[y] [x+1:]
+            for x, y in removed:
+                self.input[y] = self.input[y][:x] + "x" + self.input[y][x+1:]
 
             if len(removed) == 0:
                 break

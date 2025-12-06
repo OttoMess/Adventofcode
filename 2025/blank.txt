@@ -6,7 +6,7 @@ INPUT = "AoC_inputs/2025/day_q.txt"
 
 
 class Puzzleq:
-    def __init__(self, path):
+    def __init__(self, path) -> None:
         start_time = time.time()
 
         self.file_path = path
@@ -19,18 +19,18 @@ class Puzzleq:
         print(f"output part two: {self.part2()}")
         print(f"Run time {round(time.time() - start_time, 4)} [sec]\n")
 
-    def read_txt(self):
+    def read_txt(self) -> None:
         data = list()
         with open(self.file_path) as file:
             for line in file:
                 data.append(line.strip())
         self.input = data
 
-    def part1(self):
-        return
+    def part1(self)-> int:
+        return 0
 
-    def part2(self):
-        return
+    def part2(self)-> int:
+        return 0
 
 
 Puzzleq(EXAMPLE)

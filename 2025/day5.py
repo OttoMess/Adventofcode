@@ -5,7 +5,7 @@ INPUT = "AoC_inputs/2025/day_5.txt"
 
 
 class Puzzle5:
-    def __init__(self, path):
+    def __init__(self, path) -> None:
         start_time = time.time()
 
         self.file_path = path
@@ -18,17 +18,16 @@ class Puzzle5:
         print(f"output part two: {self.part2()}")
         print(f"Run time {round(time.time() - start_time, 4)} [sec]\n")
 
-    def read_txt(self):
-        data = list()
-        fresh = list()
-        ingredients = list()
+    def read_txt(self) -> None:
+        fresh = []
+        ingredients = []
         with open(self.file_path) as file:
-            next = False
+            different_info = False
             for line in file:
                 if line.strip() == "":
-                    next = True
+                    different_info = True
                     continue
-                if next:
+                if different_info:
                     ingredients.append(int(line.strip()))
                 else:
                     fresh.append(tuple([int(i)
@@ -37,7 +36,7 @@ class Puzzle5:
         self.fresh = tuple(fresh)
         self.ingredients = tuple(ingredients)
 
-    def part1(self):
+    def part1(self) -> int:
         counter = 0
         for ingredient in self.ingredients:
             for start, end in self.fresh:
@@ -46,7 +45,7 @@ class Puzzle5:
                     break
         return counter
 
-    def part2(self):
+    def part2(self) -> int:
         # sorting the ranges was the key to make is simple
         intervals = list(sorted(self.fresh))
 
