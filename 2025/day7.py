@@ -28,25 +28,36 @@ class Puzzle7:
 
     def part1(self) -> int:
         # count if laser hit a splitter
-        # find laser start
+        n_rows = len(self.input)
+
         counter = 0
         queue = []
-        for i, c in enumerate(self.input[0]):
+        for i, c in enumerate(self.input[0]):  # find laser start
             if c == "S":
                 heappush(queue,  (1, i))
 
         while len(queue) != 0:
             check = heappop(queue)
-            for i, c in enumerate(self.input[check[0] + 1]):
-                if c == "^" and i == check[1]:
-                    counter += 1
+            if check[0] >= n_rows-1:
+                break
 
-                    left = (check[0]+2, i-1)
-                    right = (check[0]+2, i+1)
-                    if left not in queue:
-                        heappush(queue, left)
-                    if right not in queue:
-                        heappush(queue, right)
+            c = self.input[check[0] + 1][check[1]]
+            if c == "^":
+                counter += 1
+
+                left = (check[0]+2, check[1]-1)
+                right = (check[0]+2, check[1]+1)
+
+                if left not in queue:
+                    heappush(queue, left)
+                if right not in queue:
+                    heappush(queue, right)
+
+            elif c == ".":
+                lower = (check[0]+2, check[1])
+                if lower not in queue:
+                    heappush(queue, lower)
+
         return counter
 
     def part2(self) -> int:
