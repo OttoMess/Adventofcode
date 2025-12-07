@@ -1,6 +1,5 @@
 import time
 from heapq import heappush, heappop
-from functools import cache
 
 EXAMPLE = "AoC_inputs/2025/day_7_example.txt"
 INPUT = "AoC_inputs/2025/day_7.txt"
@@ -59,61 +58,76 @@ class Puzzle7:
 
         return counter
 
-    @staticmethod
-    @cache
-    def next_point(map, check) -> list:
-        new_points = []
-        c = map[check[0] + 1][check[1]]
-        priority = -(check[0]+2)
-        if c == "^":
-            left = (check[0]+2, check[1]-1)
-            right = (check[0]+2, check[1]+1)
-
-            new_points.append([priority, left])
-            new_points.append([priority, right])
-
-        elif c == ".":
-            lower = (check[0]+2, check[1])
-            new_points.append([priority, lower])
-
-        return new_points
-
     def part2(self) -> int:
-        # count when search  hit the bottom
-        start_time = time.time()
+        """
+        count when search  hit the bottom
+        .......S.......
+        .......|.......
+        ......1^1......
+        ......|.|......
+        .....1^2^1.....
+        .....|.|.|.....
+        ....1^3^3^1....
+        ...............
+
+        From above example below the point are given with there values
+        The number is a sum of possible parts at higher level 
+
+                    1|
+                1|      1|
+            1|      2|      1|
+        1|      3|      3|      1|
+
+        using dict to collect the possible path to that point
+        added new element and adding n path of above point to already exciting element in dict.
+        key is the location in tuple(column,row)
+        value in the dict is the number of path to that location
+
+        working with search tree. Tried heapq but since this approach there is a need to alter elements in 
+        the queue this did not work. 
+        """
         n_rows = len(self.input)
-        counter = 0  # count if laser hit a splitter
-        queue = []
+        counter = 0
+        queue = {}
 
-        data_cache = []
-        for i in self.input:
-            data_cache.append(tuple(i))
-        data_cache = tuple(data_cache)
-
-        for i, c in enumerate(self.input[0]):  # find laser start
+        # find laser start
+        for i, c in enumerate(self.input[0]):
             if c == "S":
-                heappush(queue, [1, (1, i)])
+                queue[(1, i)] = 1
 
-        loop = 0
         while len(queue) != 0:
-            # TODO way to slow. possible cache ?
-            _, check = heappop(queue)
+            check = next(iter(queue))
+            n = queue[check]
+            del queue[check]
+
             if check[0] >= n_rows-1:
-                counter += 1
+                counter += n
                 continue
 
-            add_queue = self.next_point(data_cache, check)
-            for i in add_queue:
-                heappush(queue, i)
-            loop += 1
+            c = self.input[check[0] + 1][check[1]]
+            if c == "^":
+                left = (check[0]+2, check[1]-1)
+                right = (check[0]+2, check[1]+1)
 
-            if loop % 5000000 == 0:
-                print(
-                    f"{round(time.time() - start_time, 2)} [sec], counter {counter}, queue len {len(queue)}")
+                if left not in queue:
+                    queue[left] = n
+                else:
+                    queue[left] += n
+
+                if right not in queue:
+                    queue[right] = n
+                else:
+                    queue[right] += n
+
+            elif c == ".":
+                lower = (check[0]+2, check[1])
+                if lower not in queue:
+                    queue[lower] = n
+                else:
+                    queue[lower] += n
 
         return counter
 
 
 Puzzle7(EXAMPLE)
 Puzzle7(INPUT)
-# 6421586086 to low part 2
