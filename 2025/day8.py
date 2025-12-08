@@ -6,8 +6,10 @@ INPUT = "AoC_inputs/2025/day_8.txt"
 
 
 class Puzzle8:
-    def __init__(self, path) -> None:
+    def __init__(self, path, times) -> None:
         start_time = time.time()
+
+        self.times = times
 
         self.file_path = path
         self.input = list()
@@ -39,58 +41,62 @@ class Puzzle8:
 
         """
         # make list of all shortest combinations
-        min_set = []
 
-        combinations = [list(x) for x in itertools.combinations(self.input, 2)]
+        comb = [list(x) for x in itertools.combinations(self.input, 2)]
 
         min_set = [[a, b, self.euclidean_distance(
-            a, b)] for a, b in combinations]
-
-        # for a, b in combinations:
-        #     min_set.append(a, b, self.euclidean_distance(a, b))
+            a, b)] for a, b in comb]
 
         min_set.sort(key=lambda k: k[2])
 
         circuits = []
-        end = 1000
-        i = 0
-        while i < end:
+        for i in range(self.times):
             a, b, _ = min_set[i]
 
             if i == 0:
                 circuits.append(set([a, b]))
-                i += 1
-                continue  # good to here
+
+                continue
 
             for k, j in enumerate(circuits):
 
                 if a not in j and b in j:
                     circuits[k].add(a)
-                    i += 1
                     break
 
                 elif a in j and b not in j:
                     circuits[k].add(b)
-                    i += 1
                     break
 
                 elif a in j and b in j:
-                    end += 1  # no connection is made so extra element needs to be checked
-                    i += 1
                     break
 
-                if k == len(circuits)-1 and a not in j and b not in j:
+                elif k == len(circuits)-1:  # and a not in j and b not in j:
                     circuits.append(set([a, b]))
-                    i += 1
                     break
 
-        # run = True
-        # while run:
-        #     for i in range(len()):
+        # merge section
+        # TODO needs to keep looping until no more merges are made
+
+        a = len(circuits)
+        b = 0
+        while b < a:
+            a = len(circuits)
+            for i, c in enumerate(circuits):
+                to_remove = []
+
+                for j in range(i+1, len(circuits)):
+                    tester = circuits[j]
+
+                    if tester & c and tester not in to_remove:
+                        c.update(tester)
+                        to_remove.append(tester)
+
+                for item in to_remove:
+                    circuits.remove(item)
+            b = len(circuits)
 
         circuits.sort(key=lambda k: len(k), reverse=True)
-
-        # TODO merge circuits is there is an overlap
 
         collector = 1
         for i in range(3):
@@ -101,7 +107,9 @@ class Puzzle8:
         return 0
 
 # 4896 to low
+# 1323540 to high
+# 81216 not correct
 
 
-# Puzzle8(EXAMPLE)
-Puzzle8(INPUT)
+Puzzle8(EXAMPLE, 10)
+Puzzle8(INPUT, 1000)
