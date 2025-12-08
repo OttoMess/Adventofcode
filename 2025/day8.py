@@ -27,6 +27,17 @@ class Puzzle8:
         self.input = tuple(data)
 
     def part1(self) -> int:
+        """
+        https://en.wikipedia.org/wiki/Euclidean_distance
+
+
+        Docstring for part1
+        {\displaystyle d(p,q)={\sqrt {(p_{1}-q_{1})^{2}+(p_{2}-q_{2})^{2}+(p_{3}-q_{3})^{2}}}.}
+        :param self: Description
+        :return: Description
+        :rtype: int
+        """
+
         return 0
 
     def part2(self) -> int:
