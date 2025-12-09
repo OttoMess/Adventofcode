@@ -77,7 +77,6 @@ class Puzzle8:
                     break
 
         # merge section
-        # TODO needs to keep looping until no more merges are made
 
         a = len(circuits)
         b = 0
