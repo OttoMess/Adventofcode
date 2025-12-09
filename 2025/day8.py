@@ -10,6 +10,7 @@ class Puzzle8:
         start_time = time.time()
 
         self.times = times
+        self.min_set = []
 
         self.file_path = path
         self.input = list()
@@ -44,14 +45,14 @@ class Puzzle8:
 
         comb = [list(x) for x in itertools.combinations(self.input, 2)]
 
-        min_set = [[a, b, self.euclidean_distance(
+        self.min_set = [[a, b, self.euclidean_distance(
             a, b)] for a, b in comb]
 
-        min_set.sort(key=lambda k: k[2])
+        self.min_set.sort(key=lambda k: k[2])
 
         circuits = []
         for i in range(self.times):
-            a, b, _ = min_set[i]
+            a, b, _ = self.min_set[i]
 
             if i == 0:
                 circuits.append(set([a, b]))
@@ -104,7 +105,58 @@ class Puzzle8:
         return collector
 
     def part2(self) -> int:
-        return 0
+        target = len(self.input)
+        circuits = []
+        run = True
+        i_loop = 0
+        while run:
+            a, b, _ = self.min_set[i_loop]
+
+            if i_loop == 0:
+                circuits.append(set([a, b]))
+                i_loop += 1
+                continue
+
+            for k, j in enumerate(circuits):
+
+                if a not in j and b in j:
+                    circuits[k].add(a)
+                    break
+
+                elif a in j and b not in j:
+                    circuits[k].add(b)
+                    break
+
+                elif a in j and b in j:
+                    break
+
+                elif k == len(circuits)-1:  # and a not in j and b not in j:
+                    circuits.append(set([a, b]))
+                    break
+
+            d = 1
+            e = 0
+            while e < d:
+                d = len(circuits)
+                for i, c in enumerate(circuits):
+                    to_remove = []
+
+                    for j in range(i+1, len(circuits)):
+                        tester = circuits[j]
+
+                        if tester & c and tester not in to_remove:
+                            c.update(tester)
+                            to_remove.append(tester)
+
+                    for item in to_remove:
+                        circuits.remove(item)
+                e = len(circuits)
+
+            i_loop += 1
+            if len(circuits[0]) == target:
+                run = False
+
+        return a[0] * b[0]
 
 # 4896 to low
 # 1323540 to high
