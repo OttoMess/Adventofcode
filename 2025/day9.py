@@ -34,12 +34,32 @@ class Puzzle9:
             height = abs(a[0] - b[0]) + 1
             length = abs(a[1]-b[1]) + 1
             area = height * length
+
             if area > max_area:
                 max_area = area
 
         return max_area
 
     def part2(self) -> int:
+        field_width = max([i[0] for i in self.input])
+        field_height = max([i[1] for i in self.input])
+        field = []
+        for _ in range(field_height):
+            row = ""
+            for _ in range(field_width):
+                row += "."
+            field.append(row)
+
+        for i in range(len(self.input)):
+            start = self.input[i]
+            end = self.input[(i+1) % len(self.input)]
+
+            row = start[0]
+            column = start[1]
+
+            field[start[1]] = field[start[1]][:start[0]] + \
+                "#" + field[start[1]][start[0]+1:]
+
         return 0
 
 
