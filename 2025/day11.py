@@ -10,7 +10,7 @@ class Puzzle11:
         start_time = time.time()
 
         self.file_path = path
-        self.input = list()
+        self.input = dict()
 
         print(self.file_path)
         self.read_txt()
@@ -47,14 +47,26 @@ class Puzzle11:
         [heappush(queue, [i, False, False]) for i in self.input["svr"]]
 
         counter = 0
+        loop = 0
         while len(queue) > 0:
             item = heappop(queue)
             if item[0] == "out":
-                if "fft" in item and "dac" in item:
+                if item[1] and item[2]:
                     counter += 1
             else:
+                if item[0] == "fft":
+                    item[1] = True
+                elif item[0] == "dac":
+                    item[2] = True
 
-                # [heappush(queue, [i] + item) for i in self.input[item[0]]]
+                # for i in self.input[item[0]]:
+                #     heappush(queue, [i] + item[1:])
+                # # a = 1
+                [heappush(queue, [i] + item[1:]) for i in self.input[item[0]]]
+            loop += 1
+
+            if loop % 1_000_000 == 0:
+                print(len(queue), counter)
 
         return counter
 
