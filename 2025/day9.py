@@ -41,8 +41,8 @@ class Puzzle9:
         return max_area
 
     def part2(self) -> int:
-        field_width = max([i[0] for i in self.input])
-        field_height = max([i[1] for i in self.input])
+        field_width = max([i[0] for i in self.input])+2
+        field_height = max([i[1] for i in self.input])+2
         field = []
         for _ in range(field_height):
             row = ""
@@ -63,5 +63,5 @@ class Puzzle9:
         return 0
 
 
-Puzzle9(EXAMPLE)
+# Puzzle9(EXAMPLE)
 Puzzle9(INPUT)
