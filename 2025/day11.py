@@ -73,3 +73,5 @@ class Puzzle11:
 
 Puzzle11(EXAMPLE)
 Puzzle11(INPUT)
+
+# 992940 to low for part 2
