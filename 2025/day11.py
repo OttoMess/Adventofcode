@@ -1,5 +1,6 @@
 import time
 from heapq import heappush, heappop
+from functools import cache
 
 EXAMPLE = "AoC_inputs/2025/day_11_example.txt"
 INPUT = "AoC_inputs/2025/day_11.txt"
@@ -21,11 +22,15 @@ class Puzzle11:
 
     def read_txt(self) -> None:
         data = dict()
+        keys = []
         with open(self.file_path) as file:
             for line in file:
                 key = line.split(":")[0]
                 output = line.split(":")[1].strip().split()
                 data[key] = output
+                keys.append(key)
+
+        self.keys = keys
         self.input = data
 
     def part1(self) -> int:
@@ -42,36 +47,43 @@ class Puzzle11:
 
         return counter
 
-    def part2(self) -> int:
-        queue = []
-        [heappush(queue, [i, False, False]) for i in self.input["svr"]]
+    def find_end(self, start, end) -> int:
+        queue = {}
+        queue[start] = 1
 
         counter = 0
-        loop = 0
         while len(queue) > 0:
-            item = heappop(queue)
-            if item[0] == "out":
-                if item[1] and item[2]:
-                    counter += 1
+            item = next(iter(queue))
+            amount = queue[item]
+            del queue[item]
+
+            if item == end:
+                counter += amount
+            elif item == "out":
+                continue
             else:
-                if item[0] == "fft":
-                    item[1] = True
-                elif item[0] == "dac":
-                    item[2] = True
+                to_add = self.input[item]
 
-                # for i in self.input[item[0]]:
-                #     heappush(queue, [i] + item[1:])
-                # # a = 1
-                [heappush(queue, [i] + item[1:]) for i in self.input[item[0]]]
-            loop += 1
-
-            if loop % 1_000_000 == 0:
-                print(len(queue), counter)
+                for i in to_add:
+                    try:
+                        queue[i] += amount
+                    except:
+                        queue[i] = amount
 
         return counter
+
+    def part2(self) -> int:
+
+        a = self.find_end("svr", "fft")
+        b = self.find_end("fft", "dac")
+        c = self.find_end("dac", "out")
+
+        d = self.find_end("svr", "dac")
+        e = self.find_end("dac", "fft")
+        f = self.find_end("fft", "out")
+
+        return a * b * c + d * e * f
 
 
 Puzzle11(EXAMPLE)
 Puzzle11(INPUT)
-
-# 992940 to low for part 2
