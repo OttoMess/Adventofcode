@@ -1,10 +1,21 @@
 import time
 from dataclasses import dataclass
 import itertools
-
+import resource
+import sys
 
 EXAMPLE = "AoC_inputs/2025/day_10_example.txt"
 INPUT = "AoC_inputs/2025/day_10.txt"
+
+
+def memory_limit_half(ram_size_gb: int):
+    """Limit max memory usage to half."""
+    soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+    # Convert Gb adn to KiB to bytes
+    resource.setrlimit(resource.RLIMIT_AS, (ram_size_gb*1_000_000*1024, hard))
+
+
+memory_limit_half(10)
 
 
 class Puzzle10:
@@ -66,17 +77,21 @@ class Puzzle10:
         return False
 
     @staticmethod
-    def correct_joltage(joltage, pressed):
+    def correct_joltage(machine, pressed):
 
-        mutable = [0 for _ in joltage]
+        mutable = [0 for _ in machine.joltage]
 
-        for press in pressed:
-            for loc in press:
-                mutable[loc] += 1
-                if mutable[loc] < joltage[loc]:
+        for but_loc, times in enumerate(pressed):
+            if times == 0:
+                continue
+
+            button = machine.buttons[but_loc]
+            for loc in button:
+                mutable[loc] += 1 * times
+                if mutable[loc] > machine.joltage[loc]:
                     return False
 
-        if mutable == joltage:
+        if mutable == machine.joltage:
             return True
 
         return False
@@ -101,23 +116,44 @@ class Puzzle10:
 
         return sum(collector)
 
+    def distribute(self, presses, n_buttons):
+
+        if n_buttons == 1:
+            return [[presses]]
+
+        output = []
+        for i in range(presses + 1):
+            for rest in self.distribute(presses - i, n_buttons - 1):
+                output.append([i] + rest)
+        return output
+
     def part2(self) -> int:
+        # TODO need different approach, this will not work for large set of combinations
         collector = []
 
         for machine in self.input:
+            # print(machine)
             correct = False
-            n_pressed = min(machine.joltage)
+            # n_pressed = 20
 
+            q = self.distribute(2, 6)
+
+            # TODO use index for button and amount of time pressed
             while correct is False:
-                combo = itertools.combinations_with_replacement(
-                    machine.buttons, n_pressed)
+                n_buttons = len(machine.buttons)
+                combo = list(itertools.product(
+                    range(n_pressed+1), repeat=n_buttons))
+
+                combo.sort(key=lambda k: sum(k))
 
                 for test in combo:
-                    correct = self.correct_joltage(machine.joltage, test)
+                    correct = self.correct_joltage(machine, test)
                     if correct:
                         collector.append(n_pressed)
+
                         break
                 n_pressed += 1
+                print(n_pressed)
         return sum(collector)
 
 
