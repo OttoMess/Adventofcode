@@ -50,30 +50,30 @@ class Puzzle9:
         y_low = min(a[1], b[1])
 
         for start, end in self.lines:
-
-            if start == a or start == b or end == a or end == b:
-                continue
-
             # if there is a point of the contour within the area the area is invalid.
             # excluding the edges, there a point of the contour is possible
-            elif x_low < start[0] < x_high and y_low < start[1] < y_high:
+            # only start since all points are also a start in self.lines
+            if x_low < start[0] < x_high and y_low < start[1] < y_high:
                 return False
 
             # start is on the edge of the area but the end is pointed inside the area
-            # TODO check if direction of the line is relevant for this code
-            # BUG not Working correctly.
-            elif x_low == start[0] and end[0] > x_low:
-                return False
+            elif x_low == start[0] and y_low < start[1] < y_high:
+                if end[0] > x_low:
+                    return False
 
-            elif x_high == start[0] and end[0] < x_high:
-                return False
+            elif x_high == start[0] and y_low < start[1] < y_high:
+                if end[0] < x_high:
+                    return False
 
-            elif y_low == start[1] and end[1] > y_low:
-                return False
+            elif y_high == start[1] and x_low < start[0] < x_high:
+                if end[1] < y_high:
+                    return False
 
-            elif y_high == start[1] and end[1] < y_high:
-                return False
+            elif y_low == start[1] and x_low < start[0] < x_high:
+                if end[1] > y_low:
+                    return False
 
+        # BUG still lets invalid area pass
         return True
 
     def part2(self) -> int:
@@ -83,7 +83,7 @@ class Puzzle9:
             self.lines.append((self.input[i], self.input[j]))
 
         for area, index in self.areas:
-            if index == 23:
+            if index == 73866:
                 stop = True
 
             valid = self.valid_area(index)
@@ -97,3 +97,4 @@ Puzzle9(EXAMPLE)
 Puzzle9(INPUT)
 
 # 4629504600 to high
+# 1574684850 correct value
