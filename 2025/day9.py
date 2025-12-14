@@ -92,7 +92,3 @@ class Puzzle9:
 
 Puzzle9(EXAMPLE)
 Puzzle9(INPUT)
-
-# 4629504600 to high
-# 1574684850 correct value
-# 699798 to low
