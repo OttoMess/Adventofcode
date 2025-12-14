@@ -51,7 +51,7 @@ class Puzzle9:
 
         for start, end in self.lines:
             # if there is a point of the contour within the area, the area is invalid.
-            # excluding the edges, there a point of the contour is possible
+            # excluding the edges. A point of the contour on the edge is possible.
             # only start since all points are also a start in self.lines
             if x_low < start[0] < x_high and y_low < start[1] < y_high:
                 return False
