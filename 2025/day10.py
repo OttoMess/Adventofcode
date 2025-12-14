@@ -1,3 +1,5 @@
+from scipy.optimize import milp, LinearConstraint, Bounds, linprog
+import numpy as np
 import time
 from dataclasses import dataclass
 import itertools
@@ -58,13 +60,12 @@ class Puzzle10:
                            for i in part_b.strip().split("{")[1][:-1].split(",")]
 
                 data.append(
-                    machine(lights, buttons, joltage))
+                    Machine(lights, buttons, joltage))
 
         self.input = data
 
     @staticmethod
     def correct_lights_on(lights, pressed):
-
         mutable = [0 for _ in lights]
 
         for press in pressed:
@@ -76,27 +77,8 @@ class Puzzle10:
 
         return False
 
-    @staticmethod
-    def correct_joltage(machine, pressed):
-
-        mutable = [0 for _ in machine.joltage]
-
-        for but_loc, times in enumerate(pressed):
-            if times == 0:
-                continue
-
-            button = machine.buttons[but_loc]
-            for loc in button:
-                mutable[loc] += 1 * times
-                if mutable[loc] > machine.joltage[loc]:
-                    return False
-
-        if mutable == machine.joltage:
-            return True
-
-        return False
-
     def part1(self) -> int:
+        machine: Machine
         collector = []
 
         for machine in self.input:
@@ -116,53 +98,68 @@ class Puzzle10:
 
         return sum(collector)
 
-    def distribute(self, presses, n_buttons):
-
-        if n_buttons == 1:
-            return [[presses]]
-
-        output = []
-        for i in range(presses + 1):
-            for rest in self.distribute(presses - i, n_buttons - 1):
-                output.append([i] + rest)
-        return output
-
     def part2(self) -> int:
         # TODO need different approach, this will not work for large set of combinations
         collector = []
+        machine: Machine
+
+        col_2 = []
 
         for machine in self.input:
             # print(machine)
-            correct = False
-            # n_pressed = 20
+            # correct = False
+            # minimal = max(machine.joltage)
+            n_joltage = len(machine.joltage)
+            # n_pressed = minimal
+            n_buttons = len(machine.buttons)
+            # q = self.distribute(2, 6)
 
-            q = self.distribute(2, 6)
+            B = np.zeros((n_joltage, n_buttons), dtype=int)
+            for i, button in enumerate(machine.buttons):
+                for j in button:
+                    B[j, i] = 1
 
-            # TODO use index for button and amount of time pressed
-            while correct is False:
-                n_buttons = len(machine.buttons)
-                combo = list(itertools.product(
-                    range(n_pressed+1), repeat=n_buttons))
+            J = np.array(machine.joltage, dtype=int)
 
-                combo.sort(key=lambda k: sum(k))
+            c = np.ones(n_buttons, dtype=float)
+            constraints = LinearConstraint(B, lb=J, ub=J)
+            # bounds = Bounds(lb=np.zeros(n_buttons),
+            #                 ub=np.full(n_buttons, np.inf))
+            integrality = np.ones(n_buttons, dtype=int)  # bool is also fine
 
-                for test in combo:
-                    correct = self.correct_joltage(machine, test)
-                    if correct:
-                        collector.append(n_pressed)
+            # result = milp(c=c, constraints=constraints,
+            #               bounds=bounds, integrality=integrality)
 
-                        break
-                n_pressed += 1
-                print(n_pressed)
-        return sum(collector)
+            result = milp(c=c, constraints=constraints,
+                          integrality=integrality)
+
+            # e = linprog(c=c, constraints=constraints,
+            #             bounds=bounds, integrality=integrality)
+
+            if not result.success:
+                raise ValueError("No solution found")
+
+            a = result.x.astype(int)
+            b = np.rint(result.x).astype(int)
+
+            compare = a == b
+            if c.any() == False in compare:
+                print('stop')
+
+            collector.append(a)
+            col_2.append(b)
+
+        return sum([sum(x)for x in collector])
 
 
 @dataclass
-class machine:
+class Machine:
     lights: list
     buttons: list
     joltage: list
 
 
-Puzzle10(EXAMPLE)
+# Puzzle10(EXAMPLE)
 Puzzle10(INPUT)
+# 17967 to low
+# 17983 to low
