@@ -1,5 +1,5 @@
 import time
-
+from dataclasses import dataclass
 
 EXAMPLE = "AoC_inputs/2025/day_12_example.txt"
 INPUT = "AoC_inputs/2025/day_12.txt"
@@ -10,7 +10,8 @@ class Puzzle12:
         start_time = time.time()
 
         self.file_path = path
-        self.input = list()
+        self.shapes = {}
+        self.trees = []
 
         print(self.file_path)
         self.read_txt()
@@ -20,17 +21,15 @@ class Puzzle12:
         print(f"Run time {round(time.time() - start_time, 4)} [sec]\n")
 
     def read_txt(self) -> None:
-        data = list()
         with open(self.file_path) as file:
-            for line in file:
-                # make the puzzle pieces with 1 to 5 numbers, for visualization
-                data.append(line.strip())
+            data = [x.strip() for x in file]
 
         shapes = {}
         begin = 0
+        marker = int()
         while begin < 28:
             end = begin + 5
-            base = [["." for _ in range(3)] for _ in range(3)]
+            # base = [["." for _ in range(3)] for _ in range(3)]
             coordinates = []
             for i in range(begin, end):
                 if i % 5 == 0:
@@ -38,17 +37,24 @@ class Puzzle12:
                 else:
                     for j, c in enumerate(data[i]):
                         if c == "#":
-                            base[(i % 5)-1][j] = marker
+                            # base[(i % 5)-1][j] = marker
                             coordinates.append([(i % 5)-1, j])
-            shapes[marker] = base
+            # shapes[marker] = base
+            shapes[marker] = coordinates
             begin += 5
         self.shapes = shapes
 
-        for i in range(30, len(data)+1):
+        tasks = []
+        for i in range(30, len(data)):
             a, b = data[i].split(":")
             size = [int(x) for x in a.split("x")]
-            pieces = [int(x) for x in b.split()]
-        self.input = data
+            pieces = {}
+            for i, j in enumerate([int(x) for x in b.split()]):
+                pieces[i] = j
+
+            tasks.append(Region(size=size, pieces=pieces))
+
+        self.trees = tasks
 
     @staticmethod
     def rotate_shape(shape) -> list:
@@ -67,9 +73,15 @@ class Puzzle12:
         return 0
 
 
+@dataclass
+class Region:
+    size: list
+    pieces: dict
+
+
 Puzzle12(EXAMPLE)
 Puzzle12(INPUT)
 
 """
-volkskrant.nl/?referrer=https%3A%2F%2Fduckduckgo.com%2F
+https://medium.com/better-programming/automating-puzzle-solving-with-python-f3ecc242e059
 """
