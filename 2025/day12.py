@@ -26,12 +26,16 @@ class Puzzle12:
                 data.append(line.strip())
         self.input = data
 
-    def part1(self)-> int:
+    def part1(self) -> int:
         return 0
 
-    def part2(self)-> int:
+    def part2(self) -> int:
         return 0
 
 
 Puzzle12(EXAMPLE)
 Puzzle12(INPUT)
+
+"""
+volkskrant.nl/?referrer=https%3A%2F%2Fduckduckgo.com%2F
+"""
