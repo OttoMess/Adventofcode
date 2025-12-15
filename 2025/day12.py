@@ -1,5 +1,8 @@
+import matplotlib.pyplot as plt
 import time
 from dataclasses import dataclass
+# import matplotlib
+# matplotlib.use('TkAgg')
 
 EXAMPLE = "AoC_inputs/2025/day_12_example.txt"
 INPUT = "AoC_inputs/2025/day_12.txt"
@@ -29,7 +32,6 @@ class Puzzle12:
         marker = int()
         while begin < 28:
             end = begin + 5
-            # base = [["." for _ in range(3)] for _ in range(3)]
             coordinates = []
             for i in range(begin, end):
                 if i % 5 == 0:
@@ -37,9 +39,9 @@ class Puzzle12:
                 else:
                     for j, c in enumerate(data[i]):
                         if c == "#":
-                            # base[(i % 5)-1][j] = marker
+                            plt.ion()
                             coordinates.append([(i % 5)-1, j])
-            # shapes[marker] = base
+
             shapes[marker] = coordinates
             begin += 5
         self.shapes = shapes
@@ -59,14 +61,33 @@ class Puzzle12:
     @staticmethod
     def rotate_shape(shape) -> list:
         """
-        turn can be 
+        turn can be
 
         :param shape: input list of shape to be turned
         """
         turned_shape = []
         return turned_shape
 
+    @staticmethod
+    def plot_map(size):
+        # plt.ion()
+        width = size[0]
+        height = size[1]
+        b = 6
+        fig = plt.figure(figsize=((width/height)*b, b))
+        plt.xlim(1, width)
+        plt.ylim(1, height)
+        plt.xticks(range(1, width+1))
+        plt.yticks(range(1, height+1))
+        plt.grid()
+        fig.tight_layout()
+        # plt.plot([1, 2], [2, 3])
+        plt.show(block=True)
+
     def part1(self) -> int:
+        t: Region
+        for t in self.trees:
+            self.plot_map(t.size)
         return 0
 
     def part2(self) -> int:
@@ -80,7 +101,7 @@ class Region:
 
 
 Puzzle12(EXAMPLE)
-Puzzle12(INPUT)
+# Puzzle12(INPUT)
 
 """
 https://medium.com/better-programming/automating-puzzle-solving-with-python-f3ecc242e059
