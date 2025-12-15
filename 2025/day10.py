@@ -1,4 +1,4 @@
-from scipy.optimize import milp, LinearConstraint, Bounds, linprog
+from scipy.optimize import milp, LinearConstraint, Bounds
 import numpy as np
 import time
 from dataclasses import dataclass
@@ -98,21 +98,36 @@ class Puzzle10:
 
         return sum(collector)
 
-    def part2(self) -> int:
-        # TODO need different approach, this will not work for large set of combinations
-        collector = []
+    @staticmethod
+    def correct_joltage(machine, pressed):
         machine: Machine
 
-        col_2 = []
+        mutable = [0 for _ in machine.joltage]
+
+        for but_loc, times in enumerate(pressed):
+            if times == 0:
+                continue
+
+            button = machine.buttons[but_loc]
+            for loc in button:
+                mutable[loc] += 1 * times
+                if mutable[loc] > machine.joltage[loc]:
+                    return False
+
+        if mutable == machine.joltage:
+            return True
+
+        return False
+
+    def part2(self) -> int:
+        machine: Machine
+        collector = []
 
         for machine in self.input:
-            # print(machine)
-            # correct = False
-            # minimal = max(machine.joltage)
+
             n_joltage = len(machine.joltage)
-            # n_pressed = minimal
+
             n_buttons = len(machine.buttons)
-            # q = self.distribute(2, 6)
 
             B = np.zeros((n_joltage, n_buttons), dtype=int)
             for i, button in enumerate(machine.buttons):
@@ -121,35 +136,26 @@ class Puzzle10:
 
             J = np.array(machine.joltage, dtype=int)
 
-            c = np.ones(n_buttons, dtype=float)
+            c = np.ones(n_buttons, dtype=int)
             constraints = LinearConstraint(B, lb=J, ub=J)
-            # bounds = Bounds(lb=np.zeros(n_buttons),
-            #                 ub=np.full(n_buttons, np.inf))
+            bounds = Bounds(lb=np.zeros(n_buttons), ub=max(J))
             integrality = np.ones(n_buttons, dtype=int)  # bool is also fine
 
-            # result = milp(c=c, constraints=constraints,
-            #               bounds=bounds, integrality=integrality)
-
             result = milp(c=c, constraints=constraints,
-                          integrality=integrality)
+                          integrality=integrality, bounds=bounds)
 
-            # e = linprog(c=c, constraints=constraints,
-            #             bounds=bounds, integrality=integrality)
+            x = np.rint(result.x).astype(int)
+            test = self.correct_joltage(machine, x.tolist())
+            correction = 0
+            if not test:
+                print(machine, x)
+                correction = max(J) - sum(x)
 
-            if not result.success:
-                raise ValueError("No solution found")
+            collector.append(sum(x)+correction)
 
-            a = result.x.astype(int)
-            b = np.rint(result.x).astype(int)
+            # print(result.success, test, x)
 
-            compare = a == b
-            if c.any() == False in compare:
-                print('stop')
-
-            collector.append(a)
-            col_2.append(b)
-
-        return sum([sum(x)for x in collector])
+        return sum(collector)
 
 
 @dataclass
@@ -159,7 +165,5 @@ class Machine:
     joltage: list
 
 
-# Puzzle10(EXAMPLE)
+Puzzle10(EXAMPLE)
 Puzzle10(INPUT)
-# 17967 to low
-# 17983 to low
